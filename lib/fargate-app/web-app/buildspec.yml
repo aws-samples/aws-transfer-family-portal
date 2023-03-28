@@ -1,0 +1,36 @@
+version: 0.2
+
+env:
+    parameter-store:
+      REPOSITORY_URI: /Applications/FileTransferAdminPortal/webapp-ecr-uri
+      REPOSITORY_ENDPOINT: /Applications/FileTransferAdminPortal/webapp-ecr-endpoint
+
+phases:
+  pre_build:
+    commands:
+      - echo Logging in to Amazon ECR...
+      - echo Repository URI is $REPOSITORY_URI
+      - aws --version
+      - aws ecr get-login-password --region $AWS_REGION | docker login --username AWS --password-stdin $REPOSITORY_ENDPOINT
+      #- aws ecr get-login-password --region us-west-1 | docker login --username AWS --password-stdin 230272346013.dkr.ecr.us-west-1.amazonaws.com
+      #- REPOSITORY_URI=230272346013.dkr.ecr.us-west-1.amazonaws.com/stargate-web-app
+      - COMMIT_HASH=$(echo $CODEBUILD_RESOLVED_SOURCE_VERSION | cut -c 1-7)
+      - IMAGE_TAG=${COMMIT_HASH:=latest}
+  build:
+    commands:
+      - echo Starting maven package
+      - mvn package -Pproduction
+      - echo Build started on some date
+      - echo Building the Docker image...
+      - docker build -t $REPOSITORY_URI:latest .
+      - docker tag $REPOSITORY_URI:latest $REPOSITORY_URI:$IMAGE_TAG
+  post_build:
+    commands:
+      - echo Build completed on `date`
+      - echo Pushing the Docker images...
+      - docker push $REPOSITORY_URI:latest
+      - docker push $REPOSITORY_URI:$IMAGE_TAG
+      - echo Writing image definitions file...
+      - printf '[{"name":"filetransfer-admin-portal-container-1","imageUri":"%s"}]' $REPOSITORY_URI:$IMAGE_TAG > imagedefinitions.json
+artifacts:
+    files: imagedefinitions.json

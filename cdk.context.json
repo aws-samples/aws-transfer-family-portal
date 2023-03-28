@@ -1,0 +1,14 @@
+{
+  "PREFIX": "fap",
+  "APP_ADMIN_EMAIL": "admin@yourdomain.com",
+  "PARAMETER_PREFIX": "Applications/FileTransferAdminPortal/",
+  "CERTIFICATE_WILDCARD_ARN": "arn:aws:acm:us-east-2:749008044587:certificate/643214d7-27e4-429c-a509-2333b69b68dd",
+  "DOMAIN_NAME": "amazonaws-demo.com",
+  "TRANSFER_SUBDOMAIN": "transfer",
+  "VPC_CIDR": "10.195.0.0/21",
+  "availability-zones:account=749008044587:region=us-east-2": [
+    "us-east-2a",
+    "us-east-2b",
+    "us-east-2c"
+  ]
+}

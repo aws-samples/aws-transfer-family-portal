@@ -1,0 +1,24 @@
+version: 0.2
+
+env:
+    parameter-store:
+      LAMBDA_FUNCTION_NAME: /Applications/Stargate/LambdaAuthName
+      
+phases:
+  pre_build:
+    commands:
+      - echo pre build commands
+      - aws --version
+  build:
+    commands:
+      - echo Starting maven package
+      - mvn package
+      - echo attempting to update lambda
+      - aws lambda update-function-code --function-name $LAMBDA_FUNCTION_NAME --zip-file fileb://target/transferauth-1.0.0.jar
+      - echo update lambda attempted
+  post_build:
+    commands:
+      - echo Build completed on `date`
+#artifacts:
+    #files: 
+    #- packaged-template.yml

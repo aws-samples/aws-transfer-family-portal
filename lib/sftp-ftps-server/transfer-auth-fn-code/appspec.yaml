@@ -1,0 +1,9 @@
+version: 0.0
+Resources:
+  - stargate-auth-lambda:
+      Type: AWS::Lambda::Function
+      Properties:
+        Name: "stargate-auth-lambda"
+        Alias: "dev"
+        CurrentVersion: "4"
+        TargetVersion: "4"
