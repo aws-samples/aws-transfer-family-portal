@@ -1,3 +1,6 @@
+// Copyright Amazon.com, Inc. or its affiliates. All Rights Reserved.
+// SPDX-License-Identifier: MIT-0
+
 import {Construct} from 'constructs';
 import {aws_ec2 as ec2, aws_lambda as lambda, aws_iam as iam, aws_s3 as s3, aws_rds as rds, aws_logs as logs, aws_ssm as ssm} from 'aws-cdk-lib';
 import {StackProps, Stack, RemovalPolicy, ArnFormat, Duration} from 'aws-cdk-lib';

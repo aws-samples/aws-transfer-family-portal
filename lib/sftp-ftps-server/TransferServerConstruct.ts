@@ -1,4 +1,5 @@
-
+// Copyright Amazon.com, Inc. or its affiliates. All Rights Reserved.
+// SPDX-License-Identifier: MIT-0
 import {aws_ec2 as ec2, aws_lambda as lambda, aws_route53 as route53, 
     aws_certificatemanager as acm, aws_transfer as transfer, aws_iam as iam, aws_ssm as ssm} from "aws-cdk-lib";
 import {StackProps, Duration, Tags, RemovalPolicy} from "aws-cdk-lib";

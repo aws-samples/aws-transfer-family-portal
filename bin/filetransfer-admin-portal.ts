@@ -1,9 +1,12 @@
 #!/usr/bin/env node
+
+// Copyright Amazon.com, Inc. or its affiliates. All Rights Reserved.
+// SPDX-License-Identifier: MIT-0
+
 import 'source-map-support/register';
 import * as cdk from 'aws-cdk-lib';
 import { FiletransferAdminPortalStack } from '../lib/filetransfer-admin-portal-stack';
 import {Environment, App} from 'aws-cdk-lib';
-//import { GemOpenDataRegistryStack } from '../lib/gem-open-data-registry-stack';
 
 const app = new cdk.App();
 new FiletransferAdminPortalStack(app, 'FiletransferAdminPortalStack', {

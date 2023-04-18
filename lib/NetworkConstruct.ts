@@ -1,5 +1,5 @@
-
-//import {aws_ec2 as ec2, StackProps, aws_iam as iam, aws_logs as logs, aws_ssm as ssm} from 'aws-cdk-lib';
+// Copyright Amazon.com, Inc. or its affiliates. All Rights Reserved.
+// SPDX-License-Identifier: MIT-0
 
 import {StackProps} from 'aws-cdk-lib'
 import {Vpc, SubnetType, FlowLogDestination, SecurityGroup, Port, Peer,InterfaceVpcEndpointAwsService,GatewayVpcEndpointAwsService} from 'aws-cdk-lib/aws-ec2'

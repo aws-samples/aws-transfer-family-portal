@@ -1,3 +1,6 @@
+// Copyright Amazon.com, Inc. or its affiliates. All Rights Reserved.
+// SPDX-License-Identifier: MIT-0
+
 import {Construct} from 'constructs';
 import * as route53 from 'aws-cdk-lib/aws-route53';
 import * as ec2 from 'aws-cdk-lib/aws-ec2'

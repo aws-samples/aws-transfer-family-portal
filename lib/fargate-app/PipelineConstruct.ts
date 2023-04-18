@@ -1,3 +1,6 @@
+// Copyright Amazon.com, Inc. or its affiliates. All Rights Reserved.
+// SPDX-License-Identifier: MIT-0
+
 import { Pipeline, Artifact } from "aws-cdk-lib/aws-codepipeline"
 import { PipelineProject, Project } from "aws-cdk-lib/aws-codebuild"
 import {Construct} from 'constructs'

@@ -1,3 +1,6 @@
+// Copyright Amazon.com, Inc. or its affiliates. All Rights Reserved.
+// SPDX-License-Identifier: MIT-0
+
 import{aws_ec2 as ec2, aws_rds as rds, aws_ssm as ssm, aws_iam as iam, aws_secretsmanager as secretsmanager}  from 'aws-cdk-lib'
 import {Stack, StackProps, Duration, NestedStack, NestedStackProps, CfnOutput, Token, SecretValue} from 'aws-cdk-lib'
 import {Construct } from 'constructs';

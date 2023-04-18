@@ -1,3 +1,6 @@
+// Copyright Amazon.com, Inc. or its affiliates. All Rights Reserved.
+// SPDX-License-Identifier: MIT-0
+
 import {aws_ec2 as ec2, aws_lambda as lambda, aws_iam as iam, custom_resources as cr, Duration,Stack} from 'aws-cdk-lib'
 import { Construct } from 'constructs';
 import * as logs from 'aws-cdk-lib/aws-logs';
