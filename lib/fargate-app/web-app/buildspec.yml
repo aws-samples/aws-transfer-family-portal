@@ -19,7 +19,8 @@ phases:
   build:
     commands:
       - echo Starting maven package
-      - mvn package -Pproduction
+      #- mvn package -Pproduction
+      - mvn package
       - echo Build started on some date
       - echo Building the Docker image...
       - docker build -t $REPOSITORY_URI:latest .
