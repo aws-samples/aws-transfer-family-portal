@@ -64,33 +64,7 @@ public class EmailDAO {
 
 	@Autowired
 	private DataSourceImpl dataSource;
-/*
-	public void sendEmail(Email email) {
-		try {
-			SesClient sesClient = SesClient.builder().region(REGION).build();
-			Content subject = Content.builder().data(email.getSubject()).build();
-			Content bodyContent = Content.builder().data(email.getBody()).build();
-			Body body = Body.builder().html(bodyContent).build();
-			Message message = Message.builder().subject(subject).body(body).build();
-			Destination destination = Destination.builder().ccAddresses(email.getRecipients()).build();
 
-			SendEmailRequest sesRequest = SendEmailRequest.builder()
-					.destination(destination)
-					.source(Toolkit.SENDER)
-					.replyToAddresses(Toolkit.SENDER)
-					.message(message).build();
-			
-			
-			
-			SendEmailResponse response = sesClient.sendEmail(sesRequest);
-
-		} catch (Exception ex) {
-			logger.error(ex.getMessage());
-
-		}
-		email.setDateSent(Toolkit.getSanDiegoTime());
-		insertToDb(email);
-	}*/
 	
 	public static void sendEmail(Email email) throws MessagingException {
 		Session session = Session.getDefaultInstance(new Properties());
@@ -152,39 +126,20 @@ public class EmailDAO {
 		 // Instantiate an Amazon SES client, which will make the service
 		 // call with the supplied AWS credentials.
 		 SesClient sesClient = SesClient.builder().region(REGION).build();
-			
-		 //AmazonSimpleEmailService client =AmazonSimpleEmailServiceClientBuilder.standard()
-		 // Replace US_WEST_2 with the AWS Region you're using for
-		 // Amazon SES.
-		 //.withRegion(Regions.US_WEST_2).build();
-
-		 // Print the raw email content on the console (useful for troubleshooting).
-	//	 PrintStream out = System.out;
-		// message.writeTo(out);
-		 // Send the email.
+			 // Send the email.
 		 ByteArrayOutputStream outputStream = new ByteArrayOutputStream();
 		 message.writeTo(outputStream);
-	//	 RawMessage rawMessage =new RawMessage(ByteBuffer.wrap(outputStream.toByteArray()));
 	     RawMessage rawMessage = RawMessage.builder().data(SdkBytes.fromByteBuffer(ByteBuffer.wrap(outputStream.toByteArray()))).build();
 
-	     
-	    // Destination destination = Destination.builder().ccAddresses(email.getRecipients()).build();
-
+	
 	     SendRawEmailRequest rawEmailRequest = SendRawEmailRequest.builder()
 	     	.rawMessage(rawMessage)
 	     	.destinations(email.getRecipients())
 	     	.build();
-	     /*
-		 SendRawEmailRequest rawEmailRequest =
-		 new SendRawEmailRequest(rawMessage)
-		 .withConfigurationSetName(CONFIGURATION_SET);
-	*/
 		 sesClient.sendRawEmail(rawEmailRequest);
 		 System.out.println("Email sent!");
 		 
 		 if (email.getAttachment()!=null) {
-				//File file = new File(email.getAttachmentPath());
-				//file.delete();
 			 email.getAttachment().delete();
 		 }
 		 // Display an error if something goes wrong.
@@ -195,48 +150,7 @@ public class EmailDAO {
 		 }
 		 }
 
-	
-	/*
-	public static void sendMail(String subject, String message, byte[] attachement, String fileName, String contentType, String from, String[] to) {
-	    try {
-	        Session s = Session.getInstance(new Properties(), null);
-	        MimeMessage mimeMessage = new MimeMessage(s);
 
-	        mimeMessage.setFrom(new InternetAddress(from));
-	        for (String toMail : to) {
-	            mimeMessage.addRecipient(javax.mail.Message.RecipientType.TO, new InternetAddress(toMail));
-	        }
-
-	        mimeMessage.setSubject(subject);
-
-	        MimeMultipart mimeBodyPart = new MimeMultipart();
-	        BodyPart part = new MimeBodyPart();
-	        part.setContent(message, MediaType.TEXT_HTML);
-	        
-	        mimeBodyPart.addBodyPart(part);
-
-	        part = new MimeBodyPart();
-	        DataSource source = new ByteArrayDataSource(attachement, contentType);
-	        part.setDataHandler(new DataHandler(source));
-	        part.setFileName(fileName);
-	        mimeBodyPart.addBodyPart(part);
-
-	        mimeMessage.setContent(mimeBodyPart);
-	        ByteArrayOutputStream outputStream = new ByteArrayOutputStream();
-	        mimeMessage.writeTo(outputStream);
-	        RawMessage rawMessage = RawMessage.builder().data(SdkBytes.fromByteBuffer(ByteBuffer.wrap(outputStream.toByteArray()))).build();
-	        
-	        SendRawEmailRequest.builder()
-	        	.destinations(to)
-	        SendRawEmailRequest rawEmailRequest = new SendRawEmailRequest(rawMessage);
-	        rawEmailRequest.setDestinations(Arrays.asList(to));
-	        rawEmailRequest.setSource(from);
-	        client.sendRawEmail(rawEmailRequest);
-
-	    } catch (IOException | MessagingException e) {
-	        e.printStackTrace();
-	    }
-	}*/
 	
 	
 	
@@ -250,6 +164,19 @@ public class EmailDAO {
 		logger.info("Verifying email address " + email + ", response code=" + responseStatus);
 	}
 
+	
+	
+	/**
+	 * Commented out implementation below was built for situations where SES was in sandbox mode,
+	 * and you had to verify email addresses manually.  We now assume SES is in production mode.
+	 * @param emailAddress
+	 * @return
+	 */
+	public boolean validEmailAddress(String emailAddress) {
+		return true;
+	}
+	
+	/*
 	public boolean validEmailAddress(String emailAddress) {
 		SesClient sesClient = SesClient.builder().region(REGION).build();
 		GetIdentityVerificationAttributesRequest getIdentityVerificationAttributesRequest = GetIdentityVerificationAttributesRequest
@@ -268,14 +195,11 @@ public class EmailDAO {
 			IdentityVerificationAttributes attributes = map.get(s);
 			String token = attributes.verificationToken();
 			String status = attributes.verificationStatusAsString();
-
 			valid = status.equalsIgnoreCase("Success");
-			// System.out.println(s + "," + status + ", " + token);
-
 		}
 		return valid;
 	}
-
+	*/
 	public void insertToDb(Email email) {
 		String sql = "INSERT INTO emailLog (subject, body, dateSent, recipients) VALUES (?,?,?,?)";
 		try (

@@ -43,14 +43,14 @@ git clone https://github.com/aws-samples/aws-transfer-family-portal.git
    
    2.  Run this sequence of commands:
 ```
-cd filetransfer-admin-portal
+cd aws-filetransfer-admin-portal
 npm install
 cdk bootstrap
 ```
    3. In the file browser on the left side of the screen, open the file `cdk.context.json` by double-clicking on it.  This is the file where you can customize the application.
 
 - **Set Application Parameters**
-   1. `CERTIFICATE_WILDCARD_ARN`.  This is the Amazon Resource Name (ARN) of the wildcard SSL certificate you provisioned in the prerequisites.  Go to the ACM console, copy the ARN of the certificate, and paste it in `cdk.context.json`.  The line should look like this:
+   1. `CERTIFICATE_WILDCARD_ARN`.  This is the Amazon Resource Name (ARN) of the wildcard TLS certificate you provisioned in the prerequisites.  Go to the ACM console, copy the ARN of the certificate, and paste it in `cdk.context.json`.  The line should look like this:
 ` "CERTIFICATE_WILDCARD_ARN": "arn:aws:acm:your-region:123456789:certificate/c89732de-80fd-4b36-af7e-b2dc2596fc2c",`
 
    2.  `DOMAIN_NAME`.  This is the domain name you registered in the prerequisites.  The line should look like this: `"DOMAIN_NAME": "mydomain.com",`
@@ -58,6 +58,8 @@ cdk bootstrap
    3. `VPC_CIDR`.  As part of the deployment, a new VPC is created with the CIDR range defined by this variable.  You can leave this at its default value of `10.195.0.0/21`, or change it to a range of your choosing.
 
    4. `APP_ADMIN_EMAIL`.  This is the email address that the system will use to send emails to users.  The domain name should match the one you created in earlier steps.  This line will look something like this: `"APP_ADMIN_EMAIL": "admin@mydomain.com",`
+
+	5. Save your changes to `cdk.context.json` and close the file.
   
 - **Deploy the application** 
    1. Start the deployment with the command.  The deployment typically takes 15-20 minutes. 

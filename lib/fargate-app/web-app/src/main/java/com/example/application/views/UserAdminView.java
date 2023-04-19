@@ -68,10 +68,6 @@ public class UserAdminView extends SplitViewFrame {
 		Optional<? extends GrantedAuthority> grantedAuthority = SecurityContextHolder.getContext().getAuthentication()
 				.getAuthorities().stream().findFirst();
 		if (grantedAuthority.isPresent() && grantedAuthority.get().getAuthority().equals("ROLE_ADMIN")) {
-			// if
-			// (SecurityContextHolder.getContext().getAuthentication().getAuthorities().stream().findFirst().get().getAuthority().equals("ROLE_ADMIN"))
-			// {
-			this.appUserDAO = appUserDAO;
 			this.organizationDAO = organizationDAO;
 			this.keyDAO = keyDAO;
 			this.emailDAO = emailDAO;
