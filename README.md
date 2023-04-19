@@ -1,7 +1,6 @@
 # Transfer Family Management Web Application	
+Hi! This web application allows administrators of a Transfer Family instance to easily manage users and their access rights.
 
-
-Stargate, but de-branded, and using cdk v2.
 
 ## Prerequisites
 
@@ -20,7 +19,9 @@ The majority of the web application's architectural components are automatically
    1. Within the SES console navigate to `Verified Identities` and click on `Create Identity`
    2. For `Identity type` select `Domain`.  Enter the domain you provisioned earlier, e.g., `mydomain.com`
    3.  Check the box labeled `Use a custom MAIL FROM domain` and enter `mailfrom` in the `MAIL FROM domain` textbox.  Select `Enabled` under `Publish DNS records to Route 53`.
-   4.  Expand the `Advanced DKIM settings` section.  Select `Easy DKIM` as the `Identity type`, select `RSA_2048_BIT` for the `DKIM signing key length`, and select `Enabled` for both `Publish DNS records to Route 53` and `DKIM signatures`.  Finally, click on the `Create Identity` button.
+   4.  Expand the `Advanced DKIM settings` section.  Select `Easy DKIM` as the `Identity type`, select `RSA_2048_BIT` for the `DKIM signing key length`, and select `Enabled` for both `Publish DNS records to Route 53` and `DKIM signatures`.  Finally, click on the `Create Identity` button.  The next screen will show several DNS records.  Open another tab and navigate to Route 53.  Verify that the DNS records on the SES screen are listed with your other DNS records.  After a couple minutes, refresh the SES screen and the status should change from Pending to Verified.
+ 
+
 
 - **Request SES production access**. SES is in sandbox mode by default, which limits its functionality.  A short request form has to be sent to Amazon.  The response time is usually less than 24 hours.  Follow [these instructions](https://docs.aws.amazon.com/ses/latest/dg/request-production-access.html) to start this process.
 
@@ -37,7 +38,7 @@ The deployment steps, at a high level, are to provision an environment to start 
 - **Clone this repository and initialize the environment**
    1.  Once the Cloud9 environment launches, clone this repository with the command
 ```
-git clone https://gitlab.aws.dev/gmerton/filetransfer-admin-portal.git
+git clone https://github.com/aws-samples/aws-transfer-family-portal.git
 ```
    
    2.  Run this sequence of commands:
