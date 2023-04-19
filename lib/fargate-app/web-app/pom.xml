@@ -381,11 +381,7 @@
             <artifactId>tree</artifactId>
             <version>1.2.0</version>
         </dependency>
-        <dependency>
-            <groupId>org.vaadin.olli</groupId>
-            <artifactId>file-download-wrapper</artifactId>
-            <version>3.0.1</version>
-        </dependency>
+        
         <dependency>
             <groupId>com.vaadin.componentfactory</groupId>
             <artifactId>explorer-tree-grid-flow</artifactId>
@@ -418,12 +414,7 @@
             <artifactId>commons-net</artifactId>
             <version>3.6</version>
         </dependency>
-        <dependency>
-            <groupId>com.jcraft</groupId>
-            <artifactId>jsch</artifactId>
-            <version>0.1.55</version>
-        </dependency>
-
+        
         <dependency>
             <groupId>org.hibernate.validator</groupId>
             <artifactId>hibernate-validator</artifactId>
