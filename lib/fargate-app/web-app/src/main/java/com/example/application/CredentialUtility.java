@@ -43,7 +43,7 @@ import software.amazon.awssdk.services.s3.presigner.model.PresignedGetObjectRequ
 
 public class CredentialUtility {
 	private final static Logger logger = LogManager.getLogger(CredentialUtility.class);
-	private static final String VALID_PW_CHARS = "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789!@#$%^&*()-_=+{}[]|:;<>?";
+	private static final String VALID_PW_CHARS = "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789!@#$%^&*?";
 	private static final int DEFAULT_PASSWORD_LENGTH = 12;
 	private static final Random RANDOM = new SecureRandom();
 	private static final String region = System.getenv("AWS_REGION");
