@@ -55,7 +55,7 @@ public class TabBar extends FlexBoxLayout {
 		tabs = new NaviTabs();
 		tabs.setClassName(CLASS_NAME + "__tabs");
 
-		add(menuIcon, tabs, addTab, avatar);
+		add(menuIcon, tabs, addTab /*, avatar*/);
 	}
 
 	/* === MENU ICON === */

@@ -34,6 +34,23 @@ public class Home extends ViewFrame {
 	}
 
 	private Component createContent() {
+		
+		Html welcome = new Html("<p>Welcome to the <b>AWS File Transfer Admin Portal</b>  This web app let's you " +
+				"easily manager users for your Transfer Family instance.  You can add, edit, and update users,"
+				+ "provision authentication keys for them, and configure their rights to directory mappings. " +
+				" The application also includes a basic client where users can upload, download and delete files " +
+				" from the Transfer Family instance, although we recommend a more robust third-party solution like " +
+				" CyberDuck or FileZilla for production deployments</p>");
+		Html paragraph2=new Html("<p>We will continue to update the documentation on this page, and also " +
+				"in the GitHub Repo.  Feedback and pull requests are welcome.  You may also reach out to the project " +
+				"owners directly. </p>");
+		Anchor github = new Anchor("https://github.com/aws-samples/aws-transfer-family-portal", UIUtils.createButton("GitHub Repo", VaadinIcon.EXTERNAL_LINK));
+		String gabeEmail = "<a href = \"mailto: gmerton@amazon.com\">Gabe Merton, Ph.D., Developer and Architect</a>";
+		String russEmail = "<a href = \"mailto: russboye@amazon.com\">Russ Boyer, Transfer Family Expert</a>";
+		
+		Html gabeEmailLink = new Html("<p>" + gabeEmail + "</p>");
+		Html russEmailLink = new Html("<p>" + russEmail + "</p>");
+		
 		Html intro = new Html("<p>A responsive application template with some dummy data. Loosely based on " +
 				"the <b>responsive layout grid</b> guidelines set by " +
 				"<a href=\"https://material.io/design/layout/responsive-layout-grid.html\">Material Design</a>. " +
@@ -59,7 +76,8 @@ public class Home extends ViewFrame {
 		links.setFlexWrap(FlexWrap.WRAP);
 		links.setSpacing(Right.S);
 
-		FlexBoxLayout content = new FlexBoxLayout(intro, productivity, features, links);
+		FlexBoxLayout content = new FlexBoxLayout(welcome, paragraph2, github, gabeEmailLink, russEmailLink);
+		//FlexBoxLayout content = new FlexBoxLayout(intro, productivity, features, links);
 		content.setFlexDirection(FlexDirection.COLUMN);
 		content.setMargin(Horizontal.AUTO);
 		content.setMaxWidth("840px");
