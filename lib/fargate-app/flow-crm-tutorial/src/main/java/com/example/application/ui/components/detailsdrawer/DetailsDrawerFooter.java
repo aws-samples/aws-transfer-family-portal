@@ -1,17 +1,20 @@
 package com.example.application.ui.components.detailsdrawer;
 
-import com.example.application.ui.layout.size.Horizontal;
-import com.example.application.ui.layout.size.Right;
-import com.example.application.ui.layout.size.Vertical;
-import com.example.application.ui.util.LumoStyles;
-import com.example.application.ui.util.UIUtils;
-import com.example.application.views.FlexBoxLayout2;
 import com.vaadin.flow.component.ClickEvent;
 import com.vaadin.flow.component.ComponentEventListener;
 import com.vaadin.flow.component.button.Button;
 import com.vaadin.flow.shared.Registration;
 
-public class DetailsDrawerFooter extends FlexBoxLayout2 {
+
+
+import com.example.application.views.FlexBoxLayout;
+import com.example.application.ui.layout.size.Horizontal;
+import com.example.application.ui.layout.size.Right;
+import com.example.application.ui.layout.size.Vertical;
+import com.example.application.ui.util.LumoStyles;
+import com.example.application.ui.util.UIUtils;
+
+public class DetailsDrawerFooter extends FlexBoxLayout {
 
 	private Button save;
 	private Button cancel;

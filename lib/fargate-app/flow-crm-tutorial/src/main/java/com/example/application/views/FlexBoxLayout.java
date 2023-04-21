@@ -7,7 +7,7 @@ import com.example.application.ui.layout.size.Size;
 import com.example.application.ui.util.css.*;
 import java.util.ArrayList;
 
-public class FlexBoxLayout2 extends FlexLayout {
+public class FlexBoxLayout extends FlexLayout {
 
 	public static final String BACKGROUND_COLOR = "background-color";
 	public static final String BORDER_RADIUS = "border-radius";
@@ -20,7 +20,7 @@ public class FlexBoxLayout2 extends FlexLayout {
 
 	private ArrayList<Size> spacings;
 
-	public FlexBoxLayout2(Component... components) {
+	public FlexBoxLayout(Component... components) {
 		super(components);
 		spacings = new ArrayList<>();
 	}

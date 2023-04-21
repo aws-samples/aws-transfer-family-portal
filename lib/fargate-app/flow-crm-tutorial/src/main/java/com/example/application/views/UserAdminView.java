@@ -25,7 +25,7 @@ import com.example.application.data.*;
 import com.example.application.ui.components.detailsdrawer.DetailsDrawer;
 import com.example.application.ui.components.detailsdrawer.DetailsDrawerHeader;
 import com.example.application.ui.components.detailsdrawer.DetailsDrawerFooter;
-import com.example.application.views.FlexBoxLayout2;
+import com.example.application.views.FlexBoxLayout;
 import com.example.application.ui.layout.size.Horizontal;
 import com.example.application.ui.layout.size.Top;
 import com.example.application.ui.util.UIUtils;
@@ -92,7 +92,7 @@ public class UserAdminView extends SplitViewFrame {
 	}
 
 	private Component createContent() {
-		FlexBoxLayout2 content = new FlexBoxLayout2(createGrid());
+		FlexBoxLayout content = new FlexBoxLayout(createGrid());
 		content.setBoxSizing(BoxSizing.BORDER_BOX);
 		content.setHeightFull();
 		content.setPadding(Horizontal.RESPONSIVE_X, Top.RESPONSIVE_X);

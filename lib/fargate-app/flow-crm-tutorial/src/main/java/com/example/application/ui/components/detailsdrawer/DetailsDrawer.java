@@ -1,17 +1,17 @@
 package com.example.application.ui.components.detailsdrawer;
 
-import com.example.application.views.FlexBoxLayout2;
+import com.example.application.views.FlexBoxLayout;
 import com.vaadin.flow.component.Component;
 import com.vaadin.flow.component.dependency.CssImport;
 
 @CssImport("./styles/components/details-drawer.css")
-public class DetailsDrawer extends FlexBoxLayout2 {
+public class DetailsDrawer extends FlexBoxLayout {
 
 	private String CLASS_NAME = "details-drawer";
 
-	private FlexBoxLayout2 header;
-	private FlexBoxLayout2 content;
-	private FlexBoxLayout2 footer;
+	private FlexBoxLayout header;
+	private FlexBoxLayout content;
+	private FlexBoxLayout footer;
 
 	public enum Position {
 		BOTTOM, RIGHT
@@ -21,14 +21,14 @@ public class DetailsDrawer extends FlexBoxLayout2 {
 		setClassName(CLASS_NAME);
 		setPosition(position);
 
-		header = new FlexBoxLayout2();
+		header = new FlexBoxLayout();
 		header.setClassName(CLASS_NAME + "__header");
 
-		content = new FlexBoxLayout2(components);
+		content = new FlexBoxLayout(components);
 		content.setClassName(CLASS_NAME + "__content");
 		content.setFlexDirection(FlexDirection.COLUMN);
 
-		footer = new FlexBoxLayout2();
+		footer = new FlexBoxLayout();
 		footer.setClassName(CLASS_NAME + "__footer");
 
 		add(header, content, footer);
@@ -39,7 +39,7 @@ public class DetailsDrawer extends FlexBoxLayout2 {
 		this.header.add(components);
 	}
 
-	public FlexBoxLayout2 getHeader() {
+	public FlexBoxLayout getHeader() {
 		return this.header;
 	}
 
