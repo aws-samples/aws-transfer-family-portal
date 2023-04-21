@@ -105,7 +105,7 @@
 
         </dependency>
 
-        <!-- https://mvnrepository.com/artifact/org.eclipse.persistence/javax.persistence -->
+
         <dependency>
             <groupId>org.eclipse.persistence</groupId>
             <artifactId>javax.persistence</artifactId>
@@ -166,13 +166,7 @@
 
         <!-- https://mvnrepository.com/artifact/software.amazon.awssdk/transfer -->
 
-        <!--
-<dependency>
-  <groupId>software.amazon.awssdk</groupId>
-  <artifactId>s3-transfer-manager</artifactId>
-  <version>${awsjavasdk.version}-PREVIEW</version>
-</dependency>
--->
+ 
         <dependency>
             <groupId>software.amazon.awssdk</groupId>
             <artifactId>s3-transfer-manager</artifactId>
@@ -218,6 +212,7 @@
             <artifactId>fakeload</artifactId>
             <version>0.7.0</version>
         </dependency>
+        
         <dependency>
             <groupId>com.vaadin</groupId>
             <!-- Replace artifactId with vaadin-core to use only free components -->
@@ -266,26 +261,24 @@
                 </exclusion>
             </exclusions>
         </dependency>
-        <!-- https://mvnrepository.com/artifact/javax.json/javax.json-api -->
-        <dependency>
-            <groupId>javax.json</groupId>
-            <artifactId>javax.json-api</artifactId>
-        </dependency>
-        <!-- https://mvnrepository.com/artifact/com.azure.spring/azure-spring-boot-starter-active-directory -->
-
+        
+        
 
         <dependency>
             <groupId>org.vaadin</groupId>
             <artifactId>flow-viritin</artifactId>
         </dependency>
         <dependency>
+			
             <groupId>org.vaadin.artur</groupId>
             <artifactId>a-vaadin-helper</artifactId>
             <version>1.6.2</version>
         </dependency>
+<dependency>
+            <groupId>javax.json</groupId>
+            <artifactId>javax.json-api</artifactId>
+        </dependency>
 
-
-        <!-- https://mvnrepository.com/artifact/javax.inject/javax.inject -->
         <dependency>
             <groupId>javax.inject</groupId>
             <artifactId>javax.inject</artifactId>
@@ -422,6 +415,7 @@
     <build>
         <defaultGoal>spring-boot:run</defaultGoal>
         <plugins>
+	
             <plugin>
                 <groupId>org.springframework.boot</groupId>
                 <artifactId>spring-boot-maven-plugin</artifactId>
@@ -473,7 +467,8 @@
                         </executions>
                         <configuration>
                             <productionMode>true</productionMode>
-                        </configuration>
+                            <requireHomeNodeExec>true</requireHomeNodeExec>
+               			</configuration>
                     </plugin>
                 </plugins>
             </build>
