@@ -191,7 +191,32 @@
             <artifactId>cloudwatchlogs</artifactId>
             <version>2.17.279</version>
         </dependency>
-        
+        <dependency>
+            <groupId>software.amazon.awssdk</groupId>
+            <artifactId>s3-transfer-manager</artifactId>
+            <version>2.17.109-PREVIEW</version>
+        </dependency>
+        <dependency>
+            <groupId>com.jcraft</groupId>
+            <artifactId>jsch</artifactId>
+            <version>0.1.55</version>
+        </dependency>
+<dependency>
+   <groupId>org.vaadin.olli</groupId>
+   <artifactId>file-download-wrapper</artifactId>
+   <version>7.0.0</version>
+</dependency>
+<dependency>
+   <groupId>com.vaadin.componentfactory</groupId>
+   <artifactId>explorer-tree-grid-flow</artifactId>
+   <version>24.0.0</version>
+</dependency>
+<dependency>
+   <groupId>in.virit</groupId>
+   <artifactId>viritin</artifactId>
+   <version>2.0.1</version>
+</dependency>
+
         
     </dependencies>
 
