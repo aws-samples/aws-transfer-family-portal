@@ -40,7 +40,7 @@ public class Home extends ViewFrame {
 				"in the GitHub Repo.  Feedback and pull requests are welcome.  You may also reach out to the project " +
 				"owners directly. </p>");
 		Anchor github = new Anchor("https://github.com/aws-samples/aws-transfer-family-portal", UIUtils.createButton("GitHub Repo", VaadinIcon.EXTERNAL_LINK));
-		String gabeEmail = "<a href = \"mailto: gmerton@amazon.com\">Gabe Merton, Ph.D., Developer and Architect</a>";
+		String gabeEmail = "<a href = \"mailto: gmerton@amazon.com\">Gabe Merton, Ph.D., Software Developer and Solutions Architect</a>";
 		String russEmail = "<a href = \"mailto: russboye@amazon.com\">Russ Boyer, Transfer Family Expert</a>";
 		
 		Html gabeEmailLink = new Html("<p>" + gabeEmail + "</p>");
