@@ -1,5 +1,13 @@
 package com.example.application.views;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.security.core.context.SecurityContextHolder;
+import org.springframework.security.core.userdetails.UserDetails;
 
+import com.example.application.Toolkit;
+import com.example.application.dao.AppUserDAO;
+import com.example.application.dao.CloudWatchService;
+import com.example.application.data.AppUser;
+import com.example.application.data.Role;
 import com.example.application.security.SecurityService;
 import com.example.application.ui.components.navigation.bar.AppBar;
 import com.example.application.ui.components.navigation.bar.TabBar;
@@ -31,6 +39,8 @@ import com.vaadin.flow.theme.lumo.Lumo;
 import com.vaadin.flow.theme.lumo.LumoUtility;
 import com.example.application.ui.util.UIUtils;
 import com.example.application.ui.util.css.Overflow;
+
+import org.apache.logging.log4j.LogManager;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 @CssImport(value = "./styles/components/charts.css", themeFor = "vaadin-chart", include = "vaadin-chart-default-theme")
@@ -49,7 +59,6 @@ import org.slf4j.LoggerFactory;
 
 public class MainLayout extends FlexBoxLayout
 		implements RouterLayout, AfterNavigationObserver {
-
 	private static final Logger log = LoggerFactory.getLogger(MainLayout.class);
 	private static final String CLASS_NAME = "root";
 
@@ -69,16 +78,28 @@ public class MainLayout extends FlexBoxLayout
 	private boolean navigationTabs = false;
 	private AppBar appBar;
 
-	public MainLayout() {
+	private AppUser user;
+	private Role role;
+	
+	public MainLayout(@Autowired AppUserDAO appUserDAO, @Autowired CloudWatchService cloudWatchService) {
 		VaadinSession.getCurrent()
-				.setErrorHandler((ErrorHandler) errorEvent -> {
-					log.error("Uncaught UI exception",
-							errorEvent.getThrowable());
-					Notification.show(
-							"We are sorry, but an internal error occurred");
-				});
-
-		addClassName(CLASS_NAME);
+		.setErrorHandler((ErrorHandler) errorEvent -> {
+			log.error("Uncaught UI exception",
+					errorEvent.getThrowable());
+			Notification.show(
+					"We are sorry, but an internal error occurred");
+		});
+		String roleDescription = SecurityContextHolder.getContext()
+                .getAuthentication()
+                .getAuthorities()
+                .stream()
+                .findFirst().get()
+                .getAuthority();
+        Object principal = SecurityContextHolder.getContext().getAuthentication().getPrincipal();
+        String username = ((UserDetails) principal).getUsername();
+        this.user = appUserDAO.getAppUser(username);
+        role = Role.getAppRole(roleDescription);
+        addClassName(CLASS_NAME);
 		setFlexDirection(FlexDirection.COLUMN);
 		setSizeFull();
 
@@ -90,7 +111,25 @@ public class MainLayout extends FlexBoxLayout
 
 		// Configure the headers and footers (optional)
 		initHeadersAndFooters();
-	}
+
+        /*
+        try {
+            Class.forName(Toolkit.mysqldriver);
+        } catch (ClassNotFoundException e) {
+            log.error("Can't find my sql driver class: " + Toolkit.mysqldriver);
+        }*/
+        
+        /*
+        setPrimarySection(Section.DRAWER);
+        addToNavbar(true, createHeaderContent());
+        menu = createMenu();
+        addToDrawer(createDrawerContent(menu));
+        log.info("Initializing CloudWatch stream.  Make this a separate thread if it's too slow.");
+        cloudWatchService.init(username);
+        log.info("CloudWatch initialized.");*/
+    }
+
+	
 
 	/**
 	 * Initialise the required components and containers.
@@ -121,7 +160,24 @@ public class MainLayout extends FlexBoxLayout
 	 */
 	private void initNaviItems() {
 		NaviMenu menu = naviDrawer.getMenu();
-		/*
+		
+		if (this.role == Role.ROLE_ADMIN) {
+			menu.addNaviItem(VaadinIcon.HOME, "Home", Home.class);
+			menu.addNaviItem(VaadinIcon.USER, "Users", UserAdminView.class);
+			menu.addNaviItem(VaadinIcon.OFFICE, "Organizations", OrganizationView.class);
+			menu.addNaviItem(VaadinIcon.ENVELOPE, "Email", EmailView.class);
+			menu.addNaviItem(VaadinIcon.UPLOAD, "File Transfer", FileTransferView.class);
+			menu.addNaviItem(VaadinIcon.KEY, "Keys", KeyView.class);
+			menu.addNaviItem(VaadinIcon.LOCK, "Reset Password", ChangePassword.class);
+		}
+		else {
+			menu.addNaviItem(VaadinIcon.UPLOAD, "File Transfer", FileTransferView.class);
+			menu.addNaviItem(VaadinIcon.KEY, "Keys", KeyView.class);
+			menu.addNaviItem(VaadinIcon.LOCK, "Reset Password", ChangePassword.class);
+			
+		}
+		        }
+/*
 		menu.addNaviItem(VaadinIcon.HOME, "Home", Home.class);
 		menu.addNaviItem(VaadinIcon.INSTITUTION, "Accounts", Accounts.class);
 		menu.addNaviItem(VaadinIcon.CREDIT_CARD, "Payments", Payments.class);
@@ -131,7 +187,7 @@ public class MainLayout extends FlexBoxLayout
 				null);
 		menu.addNaviItem(personnel, "Accountants", Accountants.class);
 		menu.addNaviItem(personnel, "Managers", Managers.class);*/
-	}
+	
 
 	/**
 	 * Configure the app's inner and outer headers and footers.

@@ -41,7 +41,7 @@ public class Toolkit {
 	private static int workload = 12;
 	public static String TRANSFER_CLOUDWATCH_LOGGROUP_NAME;
 	private static String SSM_VPC_ENDPOINT;
-	public static final String ENROLLMENT_EMAIL_SUBJECT = "Welcome to Stargate: the DMV File Transfer Service!";
+	public static final String ENROLLMENT_EMAIL_SUBJECT = "Welcome to the Transfer Family Portal";
 	public static String SENDER;
 	private final static Logger logger = LogManager.getLogger(Toolkit.class);
 	private static Map<String, String> parameterMap = null;
