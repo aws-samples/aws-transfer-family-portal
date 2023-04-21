@@ -145,7 +145,7 @@ public class UserAdminView extends SplitViewFrame {
 	}
 
 	private void showDetails(AppUser user) {
-		detailsDrawerHeader.setTitle(user.getFirstName() + " " + user.getLastName() + " Organization=" + user.getOrganization().getId());
+		detailsDrawerHeader.setTitle(user.getFirstName() + " " + user.getLastName());
 		detailsDrawer.setContent(createDetails(user));
 		DetailsDrawerFooter footer = new DetailsDrawerFooter();
 		detailsDrawer.setFooter(footer);
