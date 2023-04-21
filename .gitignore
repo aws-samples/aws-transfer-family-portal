@@ -12,3 +12,5 @@ cdk.out
 .DS_Store
 **/.DS_Store
 .idea/
+
+lib/fargate-app/web-app/target/
