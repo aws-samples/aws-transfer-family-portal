@@ -54,7 +54,7 @@ const project = new PipelineProject(this, "pipelineproject", {
   }),
   environment: {
     privileged: true,
-    buildImage: LinuxBuildImage.AMAZON_LINUX_2_3
+    buildImage: LinuxBuildImage.STANDARD_7_0
   }
   })
 
