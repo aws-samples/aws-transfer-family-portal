@@ -77,7 +77,7 @@ public class NaviDrawer extends Div
 	}
 
 	private void initHeader() {
-		mainContent.add(new BrandExpression("###Project Name###"));
+		mainContent.add(new BrandExpression("Transfer Portal"));
 	}
 
 	private void initSearch() {
@@ -86,7 +86,7 @@ public class NaviDrawer extends Div
 		search.setClearButtonVisible(true);
 		search.setPlaceholder("Search");
 		search.setPrefixComponent(new Icon(VaadinIcon.SEARCH));
-		mainContent.add(search);
+		//mainContent.add(search);
 	}
 
 	private void initScrollableArea() {

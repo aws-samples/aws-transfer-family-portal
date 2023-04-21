@@ -18,11 +18,14 @@ import com.vaadin.flow.component.orderedlayout.FlexLayout.FlexDirection;
 import com.vaadin.flow.router.PageTitle;
 import com.vaadin.flow.router.Route;
 
+import jakarta.annotation.security.PermitAll;
+
 
 
 
 @PageTitle("Welcome")
 @Route(value = "", layout = MainLayout.class)
+@PermitAll
 public class Home extends ViewFrame {
 
 	public Home() {

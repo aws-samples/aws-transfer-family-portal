@@ -32,12 +32,15 @@ import com.vaadin.flow.data.validator.RegexpValidator;
 import com.vaadin.flow.data.value.ValueChangeMode;
 import com.vaadin.flow.router.PageTitle;
 import com.vaadin.flow.router.Route;
+
+import jakarta.annotation.security.PermitAll;
+
 import com.example.application.data.*;
 import com.example.application.dao.*;
 
 @PageTitle("Organization Admin")
 @Route(value = "Organizations", layout = MainLayout.class)
-
+@PermitAll
 public class OrganizationView extends VerticalLayout {
 	Tabs tabs = new Tabs();
 	private Grid<Organization> grid = new Grid<>();

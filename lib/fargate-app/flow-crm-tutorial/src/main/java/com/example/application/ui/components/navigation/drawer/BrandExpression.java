@@ -14,17 +14,21 @@ public class BrandExpression extends Div {
 	private Image logo;
 	private Label title;
 
+	/**
+	 * Come back to this-- allow users to customize their icon.
+	 * @param text
+	 */
 	public BrandExpression(String text) {
 		setClassName(CLASS_NAME);
-
+		/*
 		logo = new Image(UIUtils.IMG_PATH + "logos/18.png", "");
 		logo.setAlt(text + " logo");
 		logo.setClassName(CLASS_NAME + "__logo");
-
+		*/
 		title = UIUtils.createH3Label(text);
 		title.addClassName(CLASS_NAME + "__title");
 
-		add(logo, title);
+		add(/*logo,*/ title);
 	}
 
 }

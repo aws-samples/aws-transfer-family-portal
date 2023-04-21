@@ -41,9 +41,13 @@ import com.vaadin.flow.component.textfield.TextArea;
 import com.vaadin.flow.component.textfield.TextField;
 import com.vaadin.flow.router.PageTitle;
 import com.vaadin.flow.router.Route;
+
+import jakarta.annotation.security.PermitAll;
+
 import com.example.application.data.*;
 @PageTitle("Email")
 @Route(value = "Email", layout = MainLayout.class)
+@PermitAll
 public class EmailView extends VerticalLayout {
 	private final static Logger logger = LogManager.getLogger(EmailView.class);
 
