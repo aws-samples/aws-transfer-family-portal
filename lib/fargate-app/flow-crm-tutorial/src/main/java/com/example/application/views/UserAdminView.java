@@ -1,3 +1,4 @@
+
 // Copyright Amazon.com, Inc. or its affiliates. All Rights Reserved.
 // SPDX-License-Identifier: MIT-0
 package com.example.application.views;
@@ -69,6 +70,7 @@ public class UserAdminView extends SplitViewFrame {
 			this.organizationDAO = organizationDAO;
 			this.keyDAO = keyDAO;
 			this.emailDAO = emailDAO;
+			this.appUserDAO = appUserDAO;
 			userMap = appUserDAO.getAppUsers(true);
 			dataProvider = (ListDataProvider<AppUser>) DataProvider.ofCollection(userMap.values());
 			userForm = new UserForm(emailDAO, this, null);

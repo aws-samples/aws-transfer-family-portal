@@ -1,3 +1,5 @@
+// Copyright Amazon.com, Inc. or its affiliates. All Rights Reserved.
+// SPDX-License-Identifier: MIT-0
 package com.example.application.views;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.core.context.SecurityContextHolder;
@@ -112,12 +114,6 @@ public class MainLayout extends FlexBoxLayout
 		// Configure the headers and footers (optional)
 		initHeadersAndFooters();
 
-        /*
-        try {
-            Class.forName(Toolkit.mysqldriver);
-        } catch (ClassNotFoundException e) {
-            log.error("Can't find my sql driver class: " + Toolkit.mysqldriver);
-        }*/
         
         /*
         setPrimarySection(Section.DRAWER);
