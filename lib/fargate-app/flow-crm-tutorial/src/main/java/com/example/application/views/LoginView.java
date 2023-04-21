@@ -23,8 +23,8 @@ public class LoginView extends VerticalLayout implements BeforeEnterObserver {
 		setJustifyContentMode(JustifyContentMode.CENTER);
 
 		login.setAction("login"); 
-
-		add(new H1("Vaadin CRM"), login);
+		login.setForgotPasswordButtonVisible(false);
+		add(new H1("AWS Transfer Family Admin Portal"), login);
 	}
 
 	@Override
