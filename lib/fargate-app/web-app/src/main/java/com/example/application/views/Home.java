@@ -35,7 +35,7 @@ public class Home extends ViewFrame {
 				+ "provision authentication keys for them, and configure their rights to directory mappings. " +
 				" The application also includes a basic client where users can upload, download and delete files " +
 				" from the Transfer Family instance, although we recommend a more robust third-party solution like " +
-				" CyberDuck or FileZilla for production deployments</p>");
+				" CyberDuck or FileZilla for large file transfers.</p>");
 		Html paragraph2=new Html("<p>We will continue to update the documentation on this page, and also " +
 				"in the GitHub Repo.  Feedback and pull requests are welcome.  You may also reach out to the project " +
 				"owners directly. </p>");
