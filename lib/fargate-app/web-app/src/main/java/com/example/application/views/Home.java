@@ -30,7 +30,7 @@ public class Home extends ViewFrame {
 
 	private Component createContent() {
 		
-		Html welcome = new Html("<p>Welcome to the <b>AWS File Transfer Admin Portal</b>!  This web app let's you " +
+		Html welcome = new Html("<p>Welcome to the <b>AWS File Transfer Admin Portal</b>!  This web app lets you " +
 				"easily manage users for your Transfer Family instance.  You can add, edit, and update users, "
 				+ "provision authentication keys for them, and configure their rights to directory mappings. " +
 				" The application also includes a basic client where users can upload, download and delete files " +
