@@ -7,7 +7,7 @@ Hi! This web application allows administrators of a Transfer Family instance to 
 The majority of the web application's architectural components are automatically deployed by the CDK package, but there are a few manual items that need to be configured before running it.
 
 
-- **Region.**  Choose an AWS region to host the web application-  During the deployment, make sure that all instructions are followed within your desired region.  As of this writing, this solution has been tested successfully in the us-east-1, us-east-2, us-west-1 and us-west-2 regions.
+- **Region.**  Choose an AWS region to host the web application.  During the deployment, make sure that all instructions are followed within your desired region.  As of this writing, this solution has been tested successfully in the us-east-1, us-east-2, us-west-1 and us-west-2 regions.
 
 - **Sufficient Elastic IP's.** The solution requires three Elastic IPs (EIP) within your target region.  Navigate to the EC2 console; the number of EIPs currently in use by the region is shown in the inventory table at the top of the screen.  To view the region's EIP limit, navigate to the Service Quota tab.  Select the service Amazon EC2 and enter Elastic IP in the search bar.  If the quota minus the number currently in use is greater than or equal to three, then your region's capacity is sufficient.
 
