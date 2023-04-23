@@ -65,6 +65,11 @@ import software.amazon.awssdk.services.s3.model.S3Object;
 @PermitAll
 public class FileTransferView extends VerticalLayout {
 	private final static Logger logger = LogManager.getLogger(FileTransferView.class);
+	/**
+	 * Maximum file upload size in bytes.  For error checking to perform correctly, this size should
+	 * be less than the property spring.servlet.multipart.max-file-size as specified in the spring properties file.
+	 */
+	private static final int MAX_FILE_SIZE = 1024 * 1024 * 1024;
 	private Grid<TreeItem> s3ObjectGrid = new Grid<>();
 	private FileDownloadWrapper multiDownloadButtonWrapper;
 	private Upload upload;
@@ -95,22 +100,34 @@ public class FileTransferView extends VerticalLayout {
 		if (Toolkit.CLIENT_MODE.equals("S3")) {
 			transferEngine = new TransferEngineS3(cloudWatchService);
 		}
+		
 	}
 
 	private void initUpload() {
 		UploadBuffer buffer = new UploadBuffer();
 		upload = new Upload(buffer);
+		upload.setMaxFileSize(MAX_FILE_SIZE);
 		upload.setDropAllowed(false);
 		upload.setVisible(false);
-		
-		/*
-		String fileName = buffer.getFileName();
-		String s3ParentFolder = selectedFolder.getS3ObjectKey();
-		boolean needsBackslash = s3ParentFolder.charAt(s3ParentFolder.length() - 1) != '/';
-		String key = s3ParentFolder + (needsBackslash ? "/" : "") + fileName;
-		*/
-		
-		
+		upload.addStartedListener(event-> {
+			logger.info("Upload of " + event.getFileName() + " started");
+		});
+		upload.addFileRejectedListener(event->{
+			String errorMessage = null;
+			if (event.getErrorMessage().contains("Too Big")) {
+				errorMessage = "File exceeds maximum file size of " + MAX_FILE_SIZE / (1024*1024) + " MB";
+			}
+			else {
+				errorMessage = event.getErrorMessage();
+			}
+			Notification n = Notification.show(errorMessage , 3500, Position.MIDDLE);
+
+			n.addThemeVariants(NotificationVariant.LUMO_ERROR);
+			logger.info("File Rejected: " + event.getErrorMessage());
+		});
+		upload.addFailedListener(event-> {
+			logger.info("Upload failed: " + event.getReason().getMessage());
+		});
 		upload.addSucceededListener(event -> {
 			
 			String fileName = buffer.getFileName();
@@ -199,10 +216,6 @@ public class FileTransferView extends VerticalLayout {
 		permissionsList.add("read");
 		if (dm.isWrite())
 			permissionsList.add("write");
-		//if (dm.isDelete())
-		//	permissionsList.add("delete");
-		//if (dm.isWrite() && dm.isDelete())
-		//	permissionsList.add("rename");
 		permissions += String.join(", ", permissionsList);
 		return permissions;
 	}
