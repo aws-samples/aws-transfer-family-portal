@@ -45,7 +45,6 @@ public class TreeItem {
 		this.isFolder = isFolder;
 		this.depth = depth;
 		this.s3ObjectKey = s3ObjectKey;
-		logger.info("Constructor 1, s3ObjectKey=" + s3ObjectKey);
 	}
 
 	public TreeItem(DirectoryMapping directoryMapping, String label, boolean isFolder, String s3ObjectKey) {
@@ -55,25 +54,12 @@ public class TreeItem {
 		this.label = label;
 		this.isFolder = isFolder;
 		this.s3ObjectKey = s3ObjectKey;
-		logger.info("Constructor 2, s3ObjectKey=" + s3ObjectKey);
 
-	}
-
-	public void removeChild2(String s3ObjectKeyForRemoval) {
-		String rootObjectKey = this.s3ObjectKey;
-		
 	}
 	
 	public void removeChild(String s3ObjectKeyForRemoval) {
 		String rootObjectKey = this.s3ObjectKey; //top level.
-		//String remaining = s3ObjectKey.replaceFirst(s3ObjectKeyForRemoval + "/", "");
-		//String remaining = rootObjectKey.replaceFirst(s3ObjectKeyForRemoval + "/", "");
 		String remaining = s3ObjectKeyForRemoval.replaceFirst(rootObjectKey, "");
-
-		logger.info("Root object key=" + rootObjectKey);
-		logger.info("S3Object for removal key=" + s3ObjectKeyForRemoval);
-		logger.info("Remaining=" + remaining);
-		
 		LinkedList<String> pathArray = new LinkedList<String>(Arrays.asList(remaining.split("/")));
 		pathArray.push(rootObjectKey);
 
@@ -85,13 +71,10 @@ public class TreeItem {
 		
 		
 		if (!parent.getChildren().containsKey(s3ObjectKeyForRemoval)) {
-			logger.info(s3ObjectKeyForRemoval + " not found");
-			logger.info("Children:");
-			parent.getChildren().values().stream().forEach(x-> {
-				logger.info(x.getS3ObjectKey());
-			});
+		//	parent.getChildren().values().stream().forEach(x-> {
+		//		logger.info(x.getS3ObjectKey());
+		//	});
 		}
-		//parent.getChildren().remove(s3ObjectKey);
 		parent.getChildren().remove(s3ObjectKeyForRemoval);
 	}
 
@@ -136,10 +119,6 @@ public class TreeItem {
 		}
 		draftList.addFirst(relativeRoot);
 		boolean isFolder = s3Object.key().endsWith("/");
-		
-		logger.info("Draft list " + String.join("/", draftList));
-		
-		
 		draftList.pop();
 		createDirectoryStructureFromPath(draftList, !isFolder);
 	}
@@ -148,21 +127,13 @@ public class TreeItem {
 		if (folderPath.size() == 0) {
 			return;
 		}
-		
-		logger.info("Creating directory structure for " + String.join("/", folderPath));
-		
 		String label = folderPath.pop();
-		
-		logger.info(" label=" + label);
-		
 		TreeItem child = null;
 
 		if (hasChild(label)) {
 			child = getChild(label);
 		} else {
-			//String childS3Path = this.s3ObjectKey + "/" + label;
 			String childS3Path = this.s3ObjectKey + (!s3ObjectKey.endsWith("/") ? "/" : "") + label;
-			logger.info("Child S3 Path=" + childS3Path);
 			if (folderPath.size() == 0 && thisIsAFile) {
 				child = new TreeItem(this.directoryMapping,label, false, getDepth() + 1,childS3Path);
 			} else {
@@ -235,20 +206,10 @@ public class TreeItem {
 	}
 
 	public String getFtpPath() {
-		// DirectoryMapping dm 
-		// user.getDirectoryMappings().get(selectedFolder.getDirectoryMappingId());
 		String cleanTarget = directoryMapping.getRelativePath();
 		String cleanEntry = directoryMapping.getEntry().replaceFirst("/", "");
 		String cleanPath = ("/" + this.s3ObjectKey).replaceFirst(cleanTarget, cleanEntry);
-
-		logger.info("clean target =" + cleanTarget + ", cleanEntry=" + cleanEntry + ", cleanPath=" + cleanPath);
 		return cleanPath;
 	}
-
-	/*
-	 * public String getTarget() {
-	 * return target;
-	 * }
-	 */
 }
 
