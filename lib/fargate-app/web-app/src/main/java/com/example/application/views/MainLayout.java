@@ -113,16 +113,15 @@ public class MainLayout extends FlexBoxLayout
 
 		// Configure the headers and footers (optional)
 		initHeadersAndFooters();
-
+    		cloudWatchService.init(username);
+        	log.info("CloudWatch initialized.");
+   
         
         /*
         setPrimarySection(Section.DRAWER);
         addToNavbar(true, createHeaderContent());
         menu = createMenu();
-        addToDrawer(createDrawerContent(menu));
-        log.info("Initializing CloudWatch stream.  Make this a separate thread if it's too slow.");
-        cloudWatchService.init(username);
-        log.info("CloudWatch initialized.");*/
+        addToDrawer(createDrawerContent(menu));*/
     }
 
 	
