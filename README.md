@@ -1,5 +1,22 @@
 # Transfer Family Management Web Application	
-Hi! This web application allows administrators of a Transfer Family instance to easily manage users and their access rights.
+This web application allows administrators of a Transfer Family instance to easily manage users and their access rights. Features include:
+
+- Users can be created, edited and deactivated by administrators.
+- Administrators can create directory mappings and configure users' access privileges to them.
+- Users can be grouped into organizations.
+- Administrators can allow users to authenticate with either a password, a key pair, or both.
+- Users can upload and download files through the web application or via a third-party SFTP or FTPS client.
+- A CI/CD pipeline so that administrators of this application can customize the solution and quickly deploy the changes to production.
+
+At an operational level, the solution is packaged and deployed as an AWS CDK package.  The package deploys all the architectural components the solution needs to function.  The most important components include are listed below; see the architectural diagram for more details.
+
+- An AWS Transfer Family instance using S3 as its data store.
+- A containerized web application hosted on AWS Fargate.
+- An Aurora RDS instance that supports the web application.
+
+## Architecture Diagram
+
+![file-transfer-architecture (1)](https://user-images.githubusercontent.com/127906259/234111910-d62120d5-44d5-4c4c-b5ec-2196b6aa91bb.svg)
 
 
 ## Prerequisites
