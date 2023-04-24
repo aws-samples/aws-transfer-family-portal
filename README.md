@@ -18,6 +18,17 @@ At an operational level, the solution is packaged and deployed as an AWS CDK pac
 
 ![file-transfer-architecture (1)](https://user-images.githubusercontent.com/127906259/234111910-d62120d5-44d5-4c4c-b5ec-2196b6aa91bb.svg)
 
+## Web Application CI/CD
+Besides the components required for the application to function, the CDK also deploys a CI/CD pipeline so that adopters of this solution can easily customize the web application.  The components that support this flow are:
+
+- The CDK creates a CodeCommit repoistory and populates it with the code for the web applications.
+- An AWS CodePipeline is provisioned.  This pipeline uses the CodeCommit repository as its source, along with AWS CodeBuild and AWS CodeDeploy stages to build and deploy the changes.
+- Whenever a user commits to the master branch of the repository, AWS CodeBuild performs several steps with the output being a docker image.
+- The docker image is written to an Amazon Elastic Container Registry (ECR) repository.
+- Finally, AWS CodeDeploy creates a new task definition revision, and deploys the new image to AWS Fargate
+
+![file-transfer-pipeline](https://user-images.githubusercontent.com/127906259/234119132-680363e6-9be5-4f91-a7cd-f8e482221b93.svg)
+
 
 ## Prerequisites
 
