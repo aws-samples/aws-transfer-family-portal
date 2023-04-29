@@ -2,32 +2,38 @@
 // SPDX-License-Identifier: MIT-0
 
 import {Construct} from 'constructs';
-import {aws_ec2 as ec2, aws_lambda as lambda, aws_iam as iam, aws_s3 as s3, aws_rds as rds, aws_logs as logs, aws_ssm as ssm} from 'aws-cdk-lib';
+//import {aws_ec2 as ec2, aws_lambda as lambda, aws_iam as iam, aws_s3 as s3, aws_rds as rds, aws_logs as logs, aws_ssm as ssm} from 'aws-cdk-lib';
 import {StackProps, Stack, RemovalPolicy, ArnFormat, Duration} from 'aws-cdk-lib';
+import {IVpc, ISecurityGroup, Peer,Port, SecurityGroup, Subnet, SubnetType} from 'aws-cdk-lib/aws-ec2';
+import {Bucket, IBucket} from 'aws-cdk-lib/aws-s3';
+import {IFunction,DockerImageFunction, DockerImageCode} from 'aws-cdk-lib/aws-lambda';
+import {Role, ServicePrincipal, Policy, PolicyStatement, Effect} from 'aws-cdk-lib/aws-iam';
+import {RetentionDays} from 'aws-cdk-lib/aws-logs';
+import {StringParameter} from 'aws-cdk-lib/aws-ssm';
 
 export interface TransferAuthFnStackProps extends StackProps{
-  readonly vpc: ec2.IVpc;
-  readonly transferS3Bucket: s3.IBucket;
-  readonly transferPublicKeysS3Bucket: s3.IBucket;
+  readonly vpc: IVpc;
+  readonly transferS3Bucket: IBucket;
+  readonly transferPublicKeysS3Bucket: IBucket;
   //readonly dbCluster: rds.IDatabaseCluster;
-  readonly dbConnectionSg: ec2.ISecurityGroup;
+  readonly dbConnectionSg: ISecurityGroup;
 }
 
 export class TransferAuthFnConstruct extends Construct {
-  public readonly transferAuthFn: lambda.IFunction;
+  public readonly transferAuthFn: IFunction;
 
   constructor(scope: Stack, id: string, props: TransferAuthFnStackProps) {
     super(scope, id);
     
     // Role given by the transfer server's auth function to authenticated user
-    const transferS3AccessRole = new iam.Role(this, 'TransferS3AccessRole', {
-      assumedBy: new iam.ServicePrincipal('transfer.amazonaws.com'),
+    const transferS3AccessRole = new Role(this, 'TransferS3AccessRole', {
+      assumedBy: new ServicePrincipal('transfer.amazonaws.com'),
     });
 
     props.transferS3Bucket.grantReadWrite(transferS3AccessRole);
     props.transferPublicKeysS3Bucket.grantRead(transferS3AccessRole);
 
-    const transferAuthFnSg = new ec2.SecurityGroup(this, 'TransferAuthFnSg', {
+    const transferAuthFnSg = new SecurityGroup(this, 'TransferAuthFnSg', {
       vpc: props.vpc,
       allowAllOutbound: true,
     });
@@ -35,23 +41,23 @@ export class TransferAuthFnConstruct extends Construct {
     transferAuthFnSg.applyRemovalPolicy(RemovalPolicy.DESTROY);
 
     transferAuthFnSg.addIngressRule(
-      ec2.Peer.ipv4(props.vpc.vpcCidrBlock),
-      ec2.Port.allTraffic(),
+      Peer.ipv4(props.vpc.vpcCidrBlock),
+      Port.allTraffic(),
     );
 
   
 
-    this.transferAuthFn = new lambda.DockerImageFunction(this, 'TransferAuthFn', {
+    this.transferAuthFn = new DockerImageFunction(this, 'TransferAuthFn', {
       description: 'Transfer Family Authorization function.',
       memorySize: 512,
-      code: lambda.DockerImageCode.fromImageAsset(`${__dirname}/transfer-auth-fn-code`, {}),
+      code: DockerImageCode.fromImageAsset(`${__dirname}/transfer-auth-fn-code`, {}),
       vpcSubnets: props.vpc.selectSubnets({
-        subnetType: ec2.SubnetType.PRIVATE_ISOLATED,
+        subnetType: SubnetType.PRIVATE_ISOLATED,
       }),
       vpc: props.vpc,
       securityGroups: [transferAuthFnSg],
       timeout: Duration.seconds(30),
-      logRetention: logs.RetentionDays.FIVE_MONTHS,
+      logRetention: RetentionDays.FIVE_MONTHS,
       allowAllOutbound: true,
       functionName: "TransferFamilyAuth"
     });
@@ -60,7 +66,7 @@ export class TransferAuthFnConstruct extends Construct {
   
     props.transferPublicKeysS3Bucket.grantRead(this.transferAuthFn);
 
-    const dbImportedSecurityGroupTransferAuth = ec2.SecurityGroup.fromSecurityGroupId(
+    const dbImportedSecurityGroupTransferAuth = SecurityGroup.fromSecurityGroupId(
       this,
       'DbImportedSecurityGroupTransferAuth',
       
@@ -70,18 +76,18 @@ export class TransferAuthFnConstruct extends Construct {
 
     dbImportedSecurityGroupTransferAuth.addIngressRule(
       transferAuthFnSg,
-      ec2.Port.tcp(3306),
+      Port.tcp(3306),
     );
 
- const fnInitialExecutionPolicy = new iam.Policy(this, 'FnInitialExecutionPolicy', {
+ const fnInitialExecutionPolicy = new Policy(this, 'FnInitialExecutionPolicy', {
       statements: [
-        new iam.PolicyStatement({
-          effect: iam.Effect.ALLOW,
+        new PolicyStatement({
+          effect: Effect.ALLOW,
           resources: ["*"],
           actions: ['rds-db:connect'],
         }),
-        new iam.PolicyStatement({
-          effect: iam.Effect.ALLOW,
+        new PolicyStatement({
+          effect: Effect.ALLOW,
           resources: ["*"],
           
           actions: [
@@ -95,14 +101,14 @@ export class TransferAuthFnConstruct extends Construct {
 
     fnInitialExecutionPolicy.attachToRole(this.transferAuthFn.role!);
 
-    this.transferAuthFn.grantInvoke(new iam.ServicePrincipal('transfer.amazonaws.com'));
-
-    /* eslint-disable no-new */
-    new ssm.StringParameter(this, 'TransferS3AccessRoleParameter', {
+    this.transferAuthFn.grantInvoke(new ServicePrincipal('transfer.amazonaws.com'));
+  
+    
+    new StringParameter(this, 'TransferS3AccessRoleParameter', {
       parameterName: '/Applications/FileTransferAdminPortal/TransferS3AccessRole',
       stringValue: transferS3AccessRole.roleArn,
     });
-    new ssm.StringParameter(this, 'LambdaAuthNameParameter', {
+    new StringParameter(this, 'LambdaAuthNameParameter', {
       parameterName: '/Applications/FileTransferAdminPortal/LambdaAuthName',
       stringValue: this.transferAuthFn.functionName,
     });

@@ -1,27 +1,30 @@
 // Copyright Amazon.com, Inc. or its affiliates. All Rights Reserved.
 // SPDX-License-Identifier: MIT-0
 
-import{aws_ec2 as ec2, aws_rds as rds, aws_ssm as ssm, aws_iam as iam, aws_secretsmanager as secretsmanager}  from 'aws-cdk-lib'
+//import{aws_ec2 as ec2, aws_rds as rds, aws_ssm as ssm, aws_iam as iam, aws_secretsmanager as secretsmanager}  from 'aws-cdk-lib'
 import {Stack, StackProps, Duration, NestedStack, NestedStackProps, CfnOutput, Token, SecretValue} from 'aws-cdk-lib'
 import {Construct } from 'constructs';
-import { Credentials, DatabaseSecret } from 'aws-cdk-lib/aws-rds';
-import {  IVpc, SubnetType } from 'aws-cdk-lib/aws-ec2';
-import { ParameterDataType } from 'aws-cdk-lib/aws-ssm';
+import { Credentials, DatabaseSecret, DatabaseCluster, DatabaseClusterEngine } from 'aws-cdk-lib/aws-rds';
+import {Vpc,SecurityGroup , IVpc, SubnetType, ISecurityGroup, InstanceType, InstanceClass, InstanceSize,Port } from 'aws-cdk-lib/aws-ec2';
+import { ParameterDataType,StringParameter } from 'aws-cdk-lib/aws-ssm';
 import { Ec2Action } from 'aws-cdk-lib/aws-cloudwatch-actions';
 import { CdkResourceInitializer } from '../lib/resource-initializer'
 import { DockerImageCode } from "aws-cdk-lib/aws-lambda";
 import { RetentionDays } from "aws-cdk-lib/aws-logs";
+import {Secret} from 'aws-cdk-lib/aws-secretsmanager';
+
+
 const bcrypt = require('bcrypt');
 
 export interface RdsConstructProps extends StackProps {
-      readonly vpc: ec2.Vpc,
-      readonly dbConnectionSg:ec2.SecurityGroup
+      readonly vpc: Vpc,
+      readonly dbConnectionSg:SecurityGroup
     }
 
     export class RdsConstruct extends Construct {
-        readonly vpc:ec2.Vpc;
-        public readonly dbCluster: rds.DatabaseCluster;
-       readonly dbConnectionSg: ec2.ISecurityGroup;
+        readonly vpc:Vpc;
+        public readonly dbCluster: DatabaseCluster;
+       readonly dbConnectionSg: ISecurityGroup;
        
         constructor(scope:Construct, id : string,  props:RdsConstructProps) {
             super(scope,id)
@@ -30,7 +33,7 @@ export interface RdsConstructProps extends StackProps {
             const credsSecretName = 'fap-db-secret'
             const prefix = this.node.tryGetContext('PREFIX');
         /**************AURORA*************** */
-        const creds = new rds.DatabaseSecret(this, 'MysqlRdsCredentials', {
+        const creds = new DatabaseSecret(this, 'MysqlRdsCredentials', {
             secretName:credsSecretName,
             username:'admin'
             }
@@ -50,9 +53,9 @@ export interface RdsConstructProps extends StackProps {
       )*/
     
     
-       this.dbCluster = new rds.DatabaseCluster(this, "Database", {
+       this.dbCluster = new DatabaseCluster(this, "Database", {
           clusterIdentifier: `${prefix}RdsCluster`,
-          engine: rds.DatabaseClusterEngine.AURORA_MYSQL,
+          engine: DatabaseClusterEngine.AURORA_MYSQL,
           defaultDatabaseName: "FileTransferAdminPortal",
           credentials: Credentials.fromSecret(creds),
           iamAuthentication: true,
@@ -60,14 +63,14 @@ export interface RdsConstructProps extends StackProps {
             vpc: this.vpc,
             securityGroups: [this.dbConnectionSg],
             
-            instanceType: ec2.InstanceType.of(ec2.InstanceClass.T3, ec2.InstanceSize.SMALL),
+            instanceType: InstanceType.of(InstanceClass.T3, InstanceSize.SMALL),
             vpcSubnets: {
               subnetType: SubnetType.PRIVATE_ISOLATED
             }
           }
       })
     
-      new ssm.StringParameter(this, "aurora-endpoint", {
+      new StringParameter(this, "aurora-endpoint", {
         dataType: ParameterDataType.TEXT,
         parameterName: "/Applications/FileTransferAdminPortal/rds_endpoint",
         stringValue: this.dbCluster.clusterEndpoint.hostname
@@ -83,7 +86,7 @@ export interface RdsConstructProps extends StackProps {
       
       const initialSecretCreds = '{"Username":"admin", "password":"' + randomPassword + '"}'
  
-      new secretsmanager.Secret(this, 'initialUserSecret', {
+      new Secret(this, 'initialUserSecret', {
         secretName: "FileTransferPortalInitialCreds",
         secretStringValue: SecretValue.unsafePlainText(initialSecretCreds)
       })
@@ -100,14 +103,14 @@ export interface RdsConstructProps extends StackProps {
         fnSecurityGroups: [],
         vpc: this.vpc,
         subnetsSelection: props.vpc.selectSubnets({
-          subnetType: ec2.SubnetType.PRIVATE_ISOLATED
+          subnetType: SubnetType.PRIVATE_ISOLATED
         })
       }) 
       // manage resources dependency
       initializer.customResource.node.addDependency(this.dbCluster)
     
       // allow the initializer function to connect to the RDS instance
-      this.dbCluster.connections.allowFrom(initializer.function, ec2.Port.tcp(3306))
+      this.dbCluster.connections.allowFrom(initializer.function, Port.tcp(3306))
     
       // allow initializer function to read RDS instance creds secret
       creds.grantRead(initializer.function)

@@ -18,7 +18,7 @@ export class FiletransferAdminPortalStack extends Stack {
     const {vpc} = new NetworkConstruct(this, 'fap-network', props);
     const prerequisitesStack = new PrerequisitesConstruct(this, 'fap-prereqs', {vpc: vpc});
     //const rdsConstruct = new RdsConstruct(this, 'fap-rds', {vpc: vpc});
-    const lambdaPipelineConstruct = new LambdaPipelineConstruct(this, 'fap-auth-lambda');
+    const lambdaPipelineConstruct = new LambdaPipelineConstruct(this, 'fap-auth-lambda', vpc);
     const transferAuthFnConstruct = new TransferAuthFnConstruct(this, 'fap-auth-fn', {
       env: props?.env,
       vpc: vpc,
