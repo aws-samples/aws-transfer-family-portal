@@ -87,7 +87,6 @@ new StringParameter(this, "ecr-endpoint", {
 const codeBuildAction = new CodeBuildAction({
   actionName:"BuildAction",
   project:project,
-//  outputs: [codeBuildOutput],
   input: sourceOutput
 })
 
@@ -95,17 +94,5 @@ pipeline.addStage({
   stageName:"Build",
   actions: [codeBuildAction]
 })
-/*
-const ecsDeployAction = new EcsDeployAction({
-      actionName: "EcsDeploymentAction",
-      service:this.fargateService,
-      input: codeBuildOutput
-    })
-    
-    pipeline.addStage({
-      stageName: "ECS-Deploy",
-      actions: [ecsDeployAction]
-    })
-    */
   }
 }
