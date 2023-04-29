@@ -42,7 +42,7 @@ export class TransferAuthFnConstruct extends Construct {
   
 
     this.transferAuthFn = new lambda.DockerImageFunction(this, 'TransferAuthFn', {
-      description: 'A function to provide IAM roles and policies for given user and serverId.',
+      description: 'Transfer Family Authorization function.',
       memorySize: 512,
       code: lambda.DockerImageCode.fromImageAsset(`${__dirname}/transfer-auth-fn-code`, {}),
       vpcSubnets: props.vpc.selectSubnets({
@@ -56,6 +56,8 @@ export class TransferAuthFnConstruct extends Construct {
       functionName: "TransferFamilyAuth"
     });
 
+
+  
     props.transferPublicKeysS3Bucket.grantRead(this.transferAuthFn);
 
     const dbImportedSecurityGroupTransferAuth = ec2.SecurityGroup.fromSecurityGroupId(

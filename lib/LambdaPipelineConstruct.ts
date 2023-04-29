@@ -11,7 +11,6 @@ import {Effect, PolicyStatement} from 'aws-cdk-lib/aws-iam';
 import { LinuxBuildImage} from "aws-cdk-lib/aws-codebuild";
 import {IVpc, SubnetType} from 'aws-cdk-lib/aws-ec2';
 import {Repository, Code} from 'aws-cdk-lib/aws-codecommit';
-import {StackProps} from 'aws-cdk-lib';
 import {aws_ec2 as ec2, aws_lambda as lambda, aws_iam as iam, aws_s3 as s3, aws_rds as rds, aws_logs as logs, aws_ssm as ssm, aws_ecr as ecr} from 'aws-cdk-lib';
 import {StackProps, Stack, RemovalPolicy} from 'aws-cdk-lib';
 
