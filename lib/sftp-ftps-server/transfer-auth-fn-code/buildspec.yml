@@ -1,4 +1,80 @@
 version: 0.2
+env:
+    parameter-store:
+      REPOSITORY_URI: /Applications/FileTransferAdminPortal/lambda-auth-ecr-uri
+      REPOSITORY_ENDPOINT: /Applications/FileTransferAdminPortal/lambda-auth-ecr-endpoint
+phases:
+  install:
+    runtime-versions:
+       python: 3.9
+  pre_build:
+    commands:
+      - python3 --version
+      - pip3 install --upgrade pip
+      - pip3 install --upgrade awscli
+      - sudo docker info
+  build:
+    commands:
+      - echo Build started on `date`
+      - echo Building the Docker image...
+      - ls
+      - cd app
+      - docker build -t cf-demo:$CODEBUILD_BUILD_NUMBER .
+      - docker ls
+  post_build:
+    commands:
+      - echo Build completed on `date`
+      - echo Pushing the Docker image...
+      - aws ecr get-login-password --region us-east-1 | docker login --username AWS --password-stdin 111111111.dkr.ecr.us-east-1.amazonaws.com
+      - docker tag cf-demo:$CODEBUILD_BUILD_NUMBER 11111111.dkr.ecr.us-east-1.amazonaws.com/cf-demo:$CODEBUILD_BUILD_NUMBER
+      - docker push 111111111.dkr.ecr.us-east-1.amazonaws.com/cf-demo:$CODEBUILD_BUILD_NUMBER
+
+
+
+
+
+
+version: 0.2
+
+env:
+    parameter-store:
+      REPOSITORY_URI: /Applications/FileTransferAdminPortal/webapp-ecr-uri
+      REPOSITORY_ENDPOINT: /Applications/FileTransferAdminPortal/webapp-ecr-endpoint
+
+phases:
+  pre_build:
+    commands:
+      - echo Logging in to Amazon ECR...
+      - echo Repository URI is $REPOSITORY_URI
+      - aws --version
+      - aws ecr get-login-password --region $AWS_REGION | docker login --username AWS --password-stdin $REPOSITORY_ENDPOINT
+      - COMMIT_HASH=$(echo $CODEBUILD_RESOLVED_SOURCE_VERSION | cut -c 1-7)
+      - IMAGE_TAG=${COMMIT_HASH:=latest}
+  build:
+    commands:
+      - echo Starting maven package
+      - mvn package -Pproduction
+      - echo Build started on some date
+      - echo Building the Docker image...
+      - docker build -t $REPOSITORY_URI:latest .
+      - docker tag $REPOSITORY_URI:latest $REPOSITORY_URI:$IMAGE_TAG
+  post_build:
+    commands:
+      - echo Build completed on `date`
+      - echo Pushing the Docker images...
+      - docker push $REPOSITORY_URI:latest
+      - docker push $REPOSITORY_URI:$IMAGE_TAG
+      - echo Writing image definitions file...
+      # Name shown below should match the name of the task definition of the ECS service
+      - printf '[{"name":"TaskContainer","imageUri":"%s"}]' $REPOSITORY_URI:$IMAGE_TAG > imagedefinitions.json
+artifacts:
+    files: imagedefinitions.json
+
+
+
+
+
+
 
 env:
     parameter-store:
@@ -19,6 +95,3 @@ phases:
   post_build:
     commands:
       - echo Build completed on `date`
-#artifacts:
-    #files: 
-    #- packaged-template.yml

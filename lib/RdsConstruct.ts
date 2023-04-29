@@ -12,18 +12,21 @@ import { CdkResourceInitializer } from '../lib/resource-initializer'
 import { DockerImageCode } from "aws-cdk-lib/aws-lambda";
 import { RetentionDays } from "aws-cdk-lib/aws-logs";
 const bcrypt = require('bcrypt');
+
 export interface RdsConstructProps extends StackProps {
-      readonly vpc: ec2.Vpc
+      readonly vpc: ec2.Vpc,
+      readonly dbConnectionSg:ec2.SecurityGroup
     }
 
     export class RdsConstruct extends Construct {
         readonly vpc:ec2.Vpc;
         public readonly dbCluster: rds.DatabaseCluster;
-        public readonly dbConnectionSg: ec2.ISecurityGroup;
+       readonly dbConnectionSg: ec2.ISecurityGroup;
        
         constructor(scope:Construct, id : string,  props:RdsConstructProps) {
             super(scope,id)
             this.vpc=props.vpc
+            this.dbConnectionSg=props.dbConnectionSg
             const credsSecretName = 'fap-db-secret'
             const prefix = this.node.tryGetContext('PREFIX');
         /**************AURORA*************** */
@@ -32,6 +35,8 @@ export interface RdsConstructProps extends StackProps {
             username:'admin'
             }
         )
+        
+        /*
       this.dbConnectionSg = new ec2.SecurityGroup(this, "DB-securitygroup", {
         description: "File Transfer Admin Portal DB Security Group",
         vpc: this.vpc,
@@ -42,7 +47,7 @@ export interface RdsConstructProps extends StackProps {
         ec2.Peer.anyIpv4(),
         ec2.Port.tcp(3306),
         "Allow inbound"
-      )
+      )*/
     
     
        this.dbCluster = new rds.DatabaseCluster(this, "Database", {

@@ -9,7 +9,7 @@ export interface TransferAuthFnStackProps extends StackProps{
   readonly vpc: ec2.IVpc;
   readonly transferS3Bucket: s3.IBucket;
   readonly transferPublicKeysS3Bucket: s3.IBucket;
-  readonly dbCluster: rds.IDatabaseCluster;
+  //readonly dbCluster: rds.IDatabaseCluster;
   readonly dbConnectionSg: ec2.ISecurityGroup;
 }
 
@@ -53,6 +53,7 @@ export class TransferAuthFnConstruct extends Construct {
       timeout: Duration.seconds(30),
       logRetention: logs.RetentionDays.FIVE_MONTHS,
       allowAllOutbound: true,
+      functionName: "TransferFamilyAuth"
     });
 
     props.transferPublicKeysS3Bucket.grantRead(this.transferAuthFn);
@@ -70,11 +71,7 @@ export class TransferAuthFnConstruct extends Construct {
       ec2.Port.tcp(3306),
     );
 
-
-   
-
-    /*Come back to this*/
-    const fnInitialExecutionPolicy = new iam.Policy(this, 'FnInitialExecutionPolicy', {
+ const fnInitialExecutionPolicy = new iam.Policy(this, 'FnInitialExecutionPolicy', {
       statements: [
         new iam.PolicyStatement({
           effect: iam.Effect.ALLOW,

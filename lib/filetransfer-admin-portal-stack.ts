@@ -9,25 +9,28 @@ import {RdsConstruct} from './RdsConstruct';
 import {WebappPipelineConstruct} from './WebappPipelineConstruct';
 import { TransferAuthFnConstruct } from './sftp-ftps-server/TransferAuthFnConstruct';
 import {TransferServerConstruct} from './sftp-ftps-server/TransferServerConstruct';
-
+import {LambdaPipelineConstruct} from './LambdaPipelineConstruct';
 
 export class FiletransferAdminPortalStack extends Stack {
 
   constructor(scope: Construct, id: string, props?: StackProps) {
     super(scope, id, props);
     const {vpc} = new NetworkConstruct(this, 'fap-network', props);
-    const rdsConstruct = new RdsConstruct(this, 'fap-rds', {vpc: vpc});
-    const prerequisitesStack = new PrerequisitesConstruct(this, 'fap-prereqs');
+    const prerequisitesStack = new PrerequisitesConstruct(this, 'fap-prereqs', {vpc: vpc});
+    //const rdsConstruct = new RdsConstruct(this, 'fap-rds', {vpc: vpc});
+    const lambdaPipelineConstruct = new LambdaPipelineConstruct(this, 'fap-auth-lambda');
     const transferAuthFnConstruct = new TransferAuthFnConstruct(this, 'fap-auth-fn', {
       env: props?.env,
       vpc: vpc,
       transferS3Bucket: prerequisitesStack.transferS3Bucket,
       transferPublicKeysS3Bucket: prerequisitesStack.transferPublicKeysS3Bucket,
-      dbCluster: rdsConstruct.dbCluster,
-      dbConnectionSg: rdsConstruct.dbConnectionSg
+     // dbCluster: rdsConstruct.dbCluster,
+      dbConnectionSg: prerequisitesStack.dbConnectionSg
     });
+    /*
+  
     
-    const transferServerConstruct = new TransferServerConstruct(this, 'fap-server', {
+    new TransferServerConstruct(this, 'fap-server', {
       env: props?.env,
       vpc: vpc,
       functionArn: transferAuthFnConstruct.transferAuthFn.functionArn,
@@ -46,10 +49,9 @@ export class FiletransferAdminPortalStack extends Stack {
       transferPublicKeysS3Bucket: prerequisitesStack.transferPublicKeysS3Bucket,
     });
     
-    const pipelineConstruct = new WebappPipelineConstruct(this, 'fap-codePipeline', {
+    new WebappPipelineConstruct(this, 'fap-codePipeline', {
         vpc: vpc,
         fargateService: fargateService
-    });
-    
+    });*/
   }
 }

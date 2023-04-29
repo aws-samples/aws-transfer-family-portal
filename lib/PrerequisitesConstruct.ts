@@ -1,9 +1,14 @@
 // Copyright Amazon.com, Inc. or its affiliates. All Rights Reserved.
 // SPDX-License-Identifier: MIT-0
 import {Construct} from "constructs";
-import {aws_s3 as s3, aws_route53 as route53, aws_ssm as ssm} from "aws-cdk-lib";
+import {aws_s3 as s3, aws_route53 as route53, aws_ssm as ssm, aws_ec2 as ec2, aws_vpc as vpc} from "aws-cdk-lib";
 import {Stack, StackProps, RemovalPolicy} from "aws-cdk-lib";
 import { createHash } from 'crypto';
+
+
+ export interface PrerequisitesConstructProps extends StackProps {
+      readonly vpc: ec2.Vpc
+      }
 
 
 export class PrerequisitesConstruct extends Construct {
@@ -11,10 +16,13 @@ export class PrerequisitesConstruct extends Construct {
       public readonly transferPublicKeysS3Bucket: s3.Bucket;
       public readonly hostedZone?: route53.IHostedZone;
       public readonly domainName?: string;
-    
-      constructor(scope: Stack, id: string, props?: StackProps) {
+      public readonly dbConnectionSg:ec2.SecurityGroup
+      readonly vpc:ec2.Vpc
+     
+      
+      constructor(scope: Stack, id: string,  props:PrerequisitesConstructProps) {
         super(scope, id);
-    
+        this.vpc=props.vpc;
         const appAdminEmail = this.node.tryGetContext('APP_ADMIN_EMAIL');
       
         //Create a bucket that acts as the backend for Transfer Family.
@@ -70,6 +78,19 @@ export class PrerequisitesConstruct extends Construct {
           parameterName: '/Applications/FileTransferAdminPortal/sender-email-address',
           stringValue: appAdminEmail,
         }).applyRemovalPolicy(RemovalPolicy.DESTROY);
+        
+      this.dbConnectionSg = new ec2.SecurityGroup(this, "DB-securitygroup", {
+        description: "File Transfer Admin Portal DB Security Group",
+        vpc: this.vpc,
+        securityGroupName: "FileTransferAdminPortalDB-SG"
+      })
+    
+      this.dbConnectionSg.addIngressRule(
+        ec2.Peer.anyIpv4(),
+        ec2.Port.tcp(3306),
+        "Allow inbound"
+      )
+        
       
     }}
     
