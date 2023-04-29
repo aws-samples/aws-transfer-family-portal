@@ -20,7 +20,7 @@ export interface PipelineProps extends StackProps {
   
 }
 
-export class PipelineConstruct extends Construct {
+export class WebappPipelineConstruct extends Construct {
 readonly fargateService:FargateService;
 constructor(scope: Construct, id: string, props: PipelineProps) {
     super(scope, id);
@@ -31,7 +31,8 @@ constructor(scope: Construct, id: string, props: PipelineProps) {
     const codeBuildOutput = new Artifact();
     const codeCommitRepo = new Repository(this, 'codeCommitRepo', {
       repositoryName: "file-transfer-admin-portal",
-      code: Code.fromDirectory(`${__dirname}/web-app`, 'master'), // optional property, branch parameter can be omitted
+      //code: Code.fromDirectory(`${__dirname}/web-app`, 'master'), // optional property, branch parameter can be omitted
+      code: Code.fromDirectory(`${__dirname}/fargate-app/web-app`, 'master'), // optional property, branch parameter can be omitted
     });
     const codeCommitSourceAction = new CodeCommitSourceAction({
       actionName: "Source-Action",

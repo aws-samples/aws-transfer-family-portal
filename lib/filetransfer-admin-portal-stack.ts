@@ -2,11 +2,11 @@
 // SPDX-License-Identifier: MIT-0
 import { Stack, StackProps } from 'aws-cdk-lib';
 import { Construct } from 'constructs';
-import { FargateAppConstruct } from './fargate-app/FargateAppConstruct';
+import { FargateAppConstruct } from './FargateAppConstruct';
 import { NetworkConstruct } from './NetworkConstruct';
 import { PrerequisitesConstruct } from './PrerequisitesConstruct';
 import {RdsConstruct} from './RdsConstruct';
-import {PipelineConstruct} from './fargate-app/PipelineConstruct';
+import {WebappPipelineConstruct} from './WebappPipelineConstruct';
 import { TransferAuthFnConstruct } from './sftp-ftps-server/TransferAuthFnConstruct';
 import {TransferServerConstruct} from './sftp-ftps-server/TransferServerConstruct';
 
@@ -46,7 +46,7 @@ export class FiletransferAdminPortalStack extends Stack {
       transferPublicKeysS3Bucket: prerequisitesStack.transferPublicKeysS3Bucket,
     });
     
-    const pipelineConstruct = new PipelineConstruct(this, 'fap-codePipeline', {
+    const pipelineConstruct = new WebappPipelineConstruct(this, 'fap-codePipeline', {
         vpc: vpc,
         fargateService: fargateService
     });
