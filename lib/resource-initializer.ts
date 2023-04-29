@@ -1,18 +1,21 @@
 // Copyright Amazon.com, Inc. or its affiliates. All Rights Reserved.
 // SPDX-License-Identifier: MIT-0
 
-import {aws_ec2 as ec2, aws_lambda as lambda, aws_iam as iam, custom_resources as cr, Duration,Stack} from 'aws-cdk-lib'
+import * as cr from 'aws-cdk-lib/custom-resources';
 import { Construct } from 'constructs';
 import * as logs from 'aws-cdk-lib/aws-logs';
 import { createHash } from 'crypto'
-
+import {IVpc, SubnetSelection, SecurityGroup, ISecurityGroup} from 'aws-cdk-lib/aws-ec2';
+import {Duration, Stack} from 'aws-cdk-lib';
+import {DockerImageCode,Function, DockerImageFunction} from 'aws-cdk-lib/aws-lambda';
+import * as iam from 'aws-cdk-lib/aws-iam';
 
 export interface CdkResourceInitializerProps {
-  vpc: ec2.IVpc
-  subnetsSelection: ec2.SubnetSelection
-  fnSecurityGroups: ec2.ISecurityGroup[]
+  vpc: IVpc
+  subnetsSelection: SubnetSelection
+  fnSecurityGroups: ISecurityGroup[]
   fnTimeout: Duration
-  fnCode: lambda.DockerImageCode
+  fnCode: DockerImageCode
   fnLogRetention: logs.RetentionDays
   fnMemorySize?: number,
   config: any
@@ -21,20 +24,20 @@ export interface CdkResourceInitializerProps {
 export class CdkResourceInitializer extends Construct {
   public readonly response: string
   public readonly customResource: cr.AwsCustomResource
-  public readonly function: lambda.Function
+  public readonly function: Function
 
   constructor (scope: Construct, id: string, props: CdkResourceInitializerProps) {
     super(scope, id)
 
     const stack = Stack.of(this)
 
-    const fnSg = new ec2.SecurityGroup(this, 'ResourceInitializerFnSg', {
+    const fnSg = new SecurityGroup(this, 'ResourceInitializerFnSg', {
       securityGroupName: `${id}ResourceInitializerFnSg`,
       vpc: props.vpc,
       allowAllOutbound: true
     })
 
-      const fn= new lambda.DockerImageFunction(this, 'ResourceInitializerFn', {
+      const fn= new DockerImageFunction(this, 'ResourceInitializerFn', {
         memorySize: props.fnMemorySize || 128,
         functionName: `${id}-ResInit${stack.stackName}`,
         code: props.fnCode,

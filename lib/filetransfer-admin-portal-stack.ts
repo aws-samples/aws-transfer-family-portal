@@ -17,8 +17,8 @@ export class FiletransferAdminPortalStack extends Stack {
     super(scope, id, props);
     const {vpc} = new NetworkConstruct(this, 'fap-network', props);
     const prerequisitesStack = new PrerequisitesConstruct(this, 'fap-prereqs', {vpc: vpc});
-    //const rdsConstruct = new RdsConstruct(this, 'fap-rds', {vpc: vpc});
-    const lambdaPipelineConstruct = new LambdaPipelineConstruct(this, 'fap-auth-lambda', vpc);
+    const rdsConstruct = new RdsConstruct(this, 'fap-rds', prerequisitesStack.dbConnectionSg,vpc);
+    new LambdaPipelineConstruct(this, 'fap-auth-lambda', vpc);
     const transferAuthFnConstruct = new TransferAuthFnConstruct(this, 'fap-auth-fn', {
       env: props?.env,
       vpc: vpc,
@@ -27,7 +27,6 @@ export class FiletransferAdminPortalStack extends Stack {
      // dbCluster: rdsConstruct.dbCluster,
       dbConnectionSg: prerequisitesStack.dbConnectionSg
     });
-    /*
   
     
     new TransferServerConstruct(this, 'fap-server', {
@@ -52,6 +51,6 @@ export class FiletransferAdminPortalStack extends Stack {
     new WebappPipelineConstruct(this, 'fap-codePipeline', {
         vpc: vpc,
         fargateService: fargateService
-    });*/
+    });
   }
 }

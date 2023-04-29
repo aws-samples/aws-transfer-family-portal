@@ -16,20 +16,23 @@ import {Secret} from 'aws-cdk-lib/aws-secretsmanager';
 
 const bcrypt = require('bcrypt');
 
+
+/*
 export interface RdsConstructProps extends StackProps {
       readonly vpc: Vpc,
       readonly dbConnectionSg:SecurityGroup
     }
+    */
 
     export class RdsConstruct extends Construct {
         readonly vpc:Vpc;
         public readonly dbCluster: DatabaseCluster;
        readonly dbConnectionSg: ISecurityGroup;
        
-        constructor(scope:Construct, id : string,  props:RdsConstructProps) {
+        constructor(scope:Construct, id : string, dbConnectionSg: SecurityGroup, vpc:Vpc) {
             super(scope,id)
-            this.vpc=props.vpc
-            this.dbConnectionSg=props.dbConnectionSg
+            this.vpc=vpc
+            this.dbConnectionSg=dbConnectionSg
             const credsSecretName = 'fap-db-secret'
             const prefix = this.node.tryGetContext('PREFIX');
         /**************AURORA*************** */
@@ -102,7 +105,7 @@ export interface RdsConstructProps extends StackProps {
         fnTimeout: Duration.minutes(2),
         fnSecurityGroups: [],
         vpc: this.vpc,
-        subnetsSelection: props.vpc.selectSubnets({
+        subnetsSelection: vpc.selectSubnets({
           subnetType: SubnetType.PRIVATE_ISOLATED
         })
       }) 
