@@ -13,29 +13,20 @@ import {Repository, Code} from 'aws-cdk-lib/aws-codecommit';
 import {Stack, RemovalPolicy} from 'aws-cdk-lib';
 import {Repository as EcrRepository} from 'aws-cdk-lib/aws-ecr';
 import {StringParameter, ParameterDataType} from 'aws-cdk-lib/aws-ssm';
-/*
-export interface PipelineProps extends StackProps {
-  readonly vpc: IVpc;
-  readonly fargateService: FargateService;
-  
-}
-*/
+
 export class LambdaPipelineConstruct extends Construct {
-//readonly fargateService:FargateService;
-constructor(scope: Construct, id: string, vpc: IVpc) {
+  constructor(scope: Construct, id: string, vpc: IVpc) {
     super(scope, id);
-   // this.fargateService = props.fargateService;
     const pipeline = new Pipeline(this, "lambda_pipeline", {crossAccountKeys: false})
     const sourceOutput = new Artifact();
     const account = Stack.of(this).account
     const region = Stack.of(this).region
-//const codeBuildOutput = new Artifact();
-    
+
     /****ECR******* */
 
-const ecrRepository = new EcrRepository(this, "ecr", {
-  removalPolicy: RemovalPolicy.DESTROY
-})
+  const ecrRepository = new EcrRepository(this, "ecr", {
+    removalPolicy: RemovalPolicy.DESTROY
+  })
 
 new StringParameter(this, "ecr-uri", {
   dataType: ParameterDataType.TEXT,
@@ -88,7 +79,7 @@ new StringParameter(this, "ecr-endpoint", {
     sid: "FileTransferCodeBuild",
     effect: Effect.ALLOW,
     resources: ["*"],
-    actions: ["codebuild:*", "ssm:GetParameters", "ecr:*"]
+    actions: ["codebuild:*", "ssm:GetParameters", "ecr:*", "lambda:UpdateFunctionCode"]
 })
 
   project.addToRolePolicy(codeBuildPolicyStatement)
