@@ -18,8 +18,12 @@ At an operational level, the solution is packaged and deployed as an AWS CDK pac
 
 ![file-transfer-architecture (1)](https://user-images.githubusercontent.com/127906259/234111910-d62120d5-44d5-4c4c-b5ec-2196b6aa91bb.svg)
 
-## Web Application CI/CD
-Besides the components required for the application to function, the CDK also deploys a CI/CD pipeline so that adopters of this solution can easily customize the web application.  The components that support this flow are:
+## CI/CD
+Besides the components required for the application to function, the CDK also deploys CI/CD pipelines so that adopters of this solution can easily customize the solution. The deployment creates two CodeCommit repositories: one for the web application's code, and one for that of the authentication code.
+
+
+### Web Application Pipeline
+ The components that support this flow are:
 
 - The CDK creates a CodeCommit repoistory and populates it with the code for the web applications.
 - An AWS CodePipeline is provisioned.  This pipeline uses the CodeCommit repository as its source, along with AWS CodeBuild and AWS CodeDeploy stages to build and deploy the changes.
@@ -29,6 +33,16 @@ Besides the components required for the application to function, the CDK also de
 
 ![file-transfer-pipeline](https://user-images.githubusercontent.com/127906259/234119132-680363e6-9be5-4f91-a7cd-f8e482221b93.svg)
 
+### Authentication Lambda Pipeline
+The components and workflow for the authentication lambda are similar to that of the web application, the main exception being there is no CodeDeploy step.  Instead, the deployment of a fresh docker image to AWS Lambda is handled by AWS CodeBuild.
+
+- The CDK creates a CodeCommit repoistory and populates it with the code for the authentication lambda.
+- An AWS CodePipeline is provisioned.  This pipeline uses the CodeCommit repository as its source, along with AWS CodeBuildto build and deploy the changes.
+- Whenever a user commits to the master branch of the repository, the pipeline is triggered.
+- The docker image is written to an Amazon Elastic Container Registry (ECR) repository by AWS CodeBuild.
+- AWS CodeBuild updates the authentication lambda with the newly created image.
+
+![stargate-auth-cicd](https://github.com/aws-samples/aws-transfer-family-portal/assets/127906259/df888774-81f6-4eee-a5c1-4ef5e0d9f0cf)
 
 ## Prerequisites
 
