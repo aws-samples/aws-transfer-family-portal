@@ -42,7 +42,7 @@ The components and workflow for the authentication lambda are similar to that of
 - The docker image is written to an Amazon Elastic Container Registry (ECR) repository by AWS CodeBuild.
 - AWS CodeBuild updates the authentication lambda with the newly created image.
 
-![stargate-auth-cicd](https://github.com/aws-samples/aws-transfer-family-portal/assets/127906259/df888774-81f6-4eee-a5c1-4ef5e0d9f0cf)
+![stargate-auth-cicd (1)](https://github.com/aws-samples/aws-transfer-family-portal/assets/127906259/1a10a0be-7e1d-4656-87ad-dfb8e3d762f3)
 
 ## Prerequisites
 
