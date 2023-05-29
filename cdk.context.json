@@ -1,21 +1,9 @@
 {
   "PREFIX": "fap",
-  "APP_ADMIN_EMAIL": "admin@gmerton.people.aws.dev",
+  "APP_ADMIN_EMAIL": "admin@mydomain.com",
   "PARAMETER_PREFIX": "Applications/FileTransferAdminPortal/",
-  "CERTIFICATE_WILDCARD_ARN": "arn:aws:acm:us-east-1:095502255158:certificate/c89732de-80fd-4b76-af7e-b2dc2596032c",
-  "DOMAIN_NAME": "gmerton.people.aws.dev",
+  "CERTIFICATE_WILDCARD_ARN": "arn:aws:acm:us-east-1:123456789:certificate/c89732de-80fd-4b76-af7e-b2dc2596032c",
+  "DOMAIN_NAME": "mydomain.com",
   "TRANSFER_SUBDOMAIN": "transfer",
-  "VPC_CIDR": "10.195.0.0/21",
-  "availability-zones:account=095502255158:region=us-east-1": [
-    "us-east-1a",
-    "us-east-1b",
-    "us-east-1c",
-    "us-east-1d",
-    "us-east-1e",
-    "us-east-1f"
-  ],
-  "hosted-zone:account=095502255158:domainName=gmerton.people.aws.dev:region=us-east-1": {
-    "Id": "/hostedzone/Z01415891IC12VDJ0PG79",
-    "Name": "gmerton.people.aws.dev."
-  }
+  "VPC_CIDR": "10.195.0.0/21"  
 }
