@@ -110,7 +110,7 @@ cdk bootstrap
 
    2. Once the deployment is complete, navigate to the ECS console.  Under `Clusters` select the newly created cluster.  Its name will start with "FiletransferAdminPortalStack."
 
-   3.  In the `Services` tab, there will be a single service.  Click on it, and then click `Edit service`.  Change the value of `Desired tasks` from 0 to 1 and click `Update`.
+   3.  In the `Services` tab, there will be a single service.  Click on it, and then click `Update service`.  Change the value of `Desired tasks` from 0 to 1 and click `Update`.
 
    4.  Once the `Tasks` status is green with a label '1 Running', it is time to login to the app.
 
@@ -123,7 +123,7 @@ cdk bootstrap
 ## Deleting the Application
 If you'd like to remove the application from your environment, almost all of the components will be removed by deleting the stack in CloudFormation.  There are just a couple of manual steps that need to be run in order for the delete to execute cleanly.
 
-   1.  Navigate to the ECS console and select the FiletransferAdminPortal cluster.  Select the single service, and click `Edit service`.  Change `Desired tasks` from 1 to 0.
+   1.  Navigate to the ECS console and select the FiletransferAdminPortal cluster.  Select the single service, and click `Update service`.  Change `Desired tasks` from 1 to 0.
 
    2.  Navagite to the Elastic Container Repository (ECR) console, and select the FiletransferAdminPortal repository.  Delete all images in the repo.
 
