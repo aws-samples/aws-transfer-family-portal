@@ -85,7 +85,7 @@ git clone https://github.com/aws-samples/aws-transfer-family-portal.git
    
    2.  Run this sequence of commands:
 ```
-cd aws-filetransfer-admin-portal
+cd aws-transfer-family-portal
 npm install
 cdk bootstrap
 ```
