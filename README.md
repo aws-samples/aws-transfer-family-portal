@@ -71,13 +71,13 @@ The majority of the web application's architectural components are automatically
 
 The deployment steps, at a high level, are to provision an environment to start the deployment, customize some parameters, and run the deployent. 
 
-- **Provision a Cloud9 instance**  [AWS Cloud9](https://aws.amazon.com/cloud9/) is a cloud-based integrated development environment (IDE) that lets you write and run code within your browser.  This environment is inexpensive and temporary; it should be deleted after a successful deployment.
+**Provision a Cloud9 instance**  [AWS Cloud9](https://aws.amazon.com/cloud9/) is a cloud-based integrated development environment (IDE) that lets you write and run code within your browser.  This environment is inexpensive and temporary; it should be deleted after a successful deployment.
    1. Navigate to the Cloud9 console and click `Create environment`.  
    2. Give the envionment a meaningful name like "File Transfer Deployer" and click `Next step`.
    3.  Under environment settings, select `Create a new no-ingress EC2 instance for environment (access via Systems Manager)`, select `t3.small` as the instance type, and `Amazon Linux 2` as the Platform. Expand the `Network settings (advanced)` section and make sure to select a subnet with access to an internet or NAT gateway.  Click `Next step`.
    4.  Review your settings and click `Create environment`
 
-- **Clone this repository and initialize the environment**
+**Clone this repository and initialize the environment**
    1.  Once the Cloud9 environment launches, clone this repository with the command
 ```
 git clone https://github.com/aws-samples/aws-transfer-family-portal.git
@@ -91,7 +91,7 @@ cdk bootstrap
 ```
    3. In the file browser on the left side of the screen, open the file `cdk.context.json` by double-clicking on it.  This is the file where you can customize the application.
 
-- **Set Application Parameters**
+**Set Application Parameters**
    1. `CERTIFICATE_WILDCARD_ARN`.  This is the Amazon Resource Name (ARN) of the wildcard TLS certificate you provisioned in the prerequisites.  Go to the ACM console, copy the ARN of the certificate, and paste it in `cdk.context.json`.  The line should look like this:
 ` "CERTIFICATE_WILDCARD_ARN": "arn:aws:acm:your-region:123456789:certificate/c89732de-80fd-4b36-af7e-b2dc2596fc2c",`
 
@@ -101,13 +101,12 @@ cdk bootstrap
 
    4. `APP_ADMIN_EMAIL`.  This is the email address that the system will use to send emails to users.  The domain name should match the one you created in earlier steps.  This line will look something like this: `"APP_ADMIN_EMAIL": "admin@mydomain.com",`
 
-	5. Save your changes to `cdk.context.json` and close the file.
+   5. Save your changes to `cdk.context.json` and close the file.
   
-- **Deploy the application** 
-   1. Start the deployment with the command.  The deployment typically takes 15-20 minutes. 
-```
-cdk deploy --require-approval never
-```  
+**Deploy the application** 
+   1. Start the deployment with the command below.  The deployment typically takes 15-20 minutes. 
+
+```cdk deploy --require-approval never```  
 
    2. Once the deployment is complete, navigate to the ECS console.  Under `Clusters` select the newly created cluster.  Its name will start with "FiletransferAdminPortalStack."
 
