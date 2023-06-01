@@ -2,47 +2,37 @@
 // SPDX-License-Identifier: MIT-0
 package com.example.application.views;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.security.web.authentication.logout.SecurityContextLogoutHandler;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.core.userdetails.UserDetails;
 
-import com.example.application.Toolkit;
 import com.example.application.dao.AppUserDAO;
 import com.example.application.dao.CloudWatchService;
-import com.example.application.data.AppUser;
 import com.example.application.data.Role;
-import com.example.application.security.SecurityService;
 import com.example.application.ui.components.navigation.bar.AppBar;
-import com.example.application.ui.components.navigation.bar.TabBar;
 import com.example.application.ui.components.navigation.drawer.NaviDrawer;
 import com.example.application.ui.components.navigation.drawer.NaviMenu;
 import com.example.application.ui.components.navigation.drawer.NaviItem;
 import com.vaadin.flow.component.Component;
 import com.vaadin.flow.component.HasElement;
 import com.vaadin.flow.component.UI;
-import com.vaadin.flow.component.applayout.AppLayout;
-import com.vaadin.flow.component.applayout.DrawerToggle;
 import com.vaadin.flow.component.button.Button;
 import com.vaadin.flow.component.dependency.CssImport;
 import com.vaadin.flow.component.dependency.JsModule;
 import com.vaadin.flow.component.html.Div;
-import com.vaadin.flow.component.html.H1;
 import com.vaadin.flow.component.icon.VaadinIcon;
 import com.vaadin.flow.component.notification.Notification;
-import com.vaadin.flow.component.orderedlayout.FlexComponent;
-import com.vaadin.flow.component.orderedlayout.HorizontalLayout;
-import com.vaadin.flow.component.orderedlayout.VerticalLayout;
 import com.vaadin.flow.router.AfterNavigationEvent;
 import com.vaadin.flow.router.AfterNavigationObserver;
+import com.vaadin.flow.router.BeforeLeaveEvent;
+import com.vaadin.flow.router.BeforeLeaveObserver;
 import com.vaadin.flow.router.RouterLayout;
-import com.vaadin.flow.router.RouterLink;
 import com.vaadin.flow.server.ErrorHandler;
+import com.vaadin.flow.server.VaadinServletRequest;
 import com.vaadin.flow.server.VaadinSession;
 import com.vaadin.flow.theme.lumo.Lumo;
-import com.vaadin.flow.theme.lumo.LumoUtility;
 import com.example.application.ui.util.UIUtils;
 import com.example.application.ui.util.css.Overflow;
-
-import org.apache.logging.log4j.LogManager;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 @CssImport(value = "./styles/components/charts.css", themeFor = "vaadin-chart", include = "vaadin-chart-default-theme")
@@ -56,6 +46,7 @@ import org.slf4j.LoggerFactory;
 @CssImport("./styles/lumo/spacing.css")
 @CssImport("./styles/lumo/typography.css")
 @CssImport("./styles/misc/box-shadow-borders.css")
+@CssImport("./styles/components/navi-item.css")
 @CssImport(value = "./styles/styles.css", include = "lumo-badge")
 @JsModule("@vaadin/vaadin-lumo-styles/badge")
 
@@ -63,24 +54,12 @@ public class MainLayout extends FlexBoxLayout
 		implements RouterLayout, AfterNavigationObserver {
 	private static final Logger log = LoggerFactory.getLogger(MainLayout.class);
 	private static final String CLASS_NAME = "root";
-
-	private Div appHeaderOuter;
-
 	private FlexBoxLayout row;
 	private NaviDrawer naviDrawer;
 	private FlexBoxLayout column;
-
 	private Div appHeaderInner;
 	private FlexBoxLayout viewContainer;
-	private Div appFooterInner;
-
-	private Div appFooterOuter;
-
-	private TabBar tabBar;
-	private boolean navigationTabs = false;
 	private AppBar appBar;
-
-	private AppUser user;
 	private Role role;
 	
 	public MainLayout(@Autowired AppUserDAO appUserDAO, @Autowired CloudWatchService cloudWatchService) {
@@ -99,7 +78,6 @@ public class MainLayout extends FlexBoxLayout
                 .getAuthority();
         Object principal = SecurityContextHolder.getContext().getAuthentication().getPrincipal();
         String username = ((UserDetails) principal).getUsername();
-        this.user = appUserDAO.getAppUser(username);
         role = Role.getAppRole(roleDescription);
         addClassName(CLASS_NAME);
 		setFlexDirection(FlexDirection.COLUMN);
@@ -115,13 +93,6 @@ public class MainLayout extends FlexBoxLayout
 		initHeadersAndFooters();
     		cloudWatchService.init(username);
         	log.info("CloudWatch initialized.");
-   
-        
-        /*
-        setPrimarySection(Section.DRAWER);
-        addToNavbar(true, createHeaderContent());
-        menu = createMenu();
-        addToDrawer(createDrawerContent(menu));*/
     }
 
 	
@@ -150,6 +121,13 @@ public class MainLayout extends FlexBoxLayout
 		setFlexGrow(1, row);
 	}
 
+	private void logout() {
+		SecurityContextLogoutHandler logoutHandler = new SecurityContextLogoutHandler();
+		logoutHandler.logout(
+			VaadinServletRequest.getCurrent().getHttpServletRequest(), null,
+		null);
+	}
+	
 	/**
 	 * Initialise the navigation items.
 	 */
@@ -164,72 +142,29 @@ public class MainLayout extends FlexBoxLayout
 			menu.addNaviItem(VaadinIcon.UPLOAD, "File Transfer", FileTransferView.class);
 			menu.addNaviItem(VaadinIcon.KEY, "Keys", KeyView.class);
 			menu.addNaviItem(VaadinIcon.LOCK, "Reset Password", ChangePassword.class);
+			NaviItem logoutNaviItem = menu.addNaviItem(VaadinIcon.EXIT, "Logout", LoginView.class);
+			logoutNaviItem.addClickListener(e->logout());
 		}
 		else {
 			menu.addNaviItem(VaadinIcon.UPLOAD, "File Transfer", FileTransferView.class);
 			menu.addNaviItem(VaadinIcon.KEY, "Keys", KeyView.class);
 			menu.addNaviItem(VaadinIcon.LOCK, "Reset Password", ChangePassword.class);
+			NaviItem logoutNaviItem = menu.addNaviItem(VaadinIcon.EXIT, "Logout", LoginView.class);
+			logoutNaviItem.addClickListener(e->logout());
 			
 		}
 		        }
-/*
-		menu.addNaviItem(VaadinIcon.HOME, "Home", Home.class);
-		menu.addNaviItem(VaadinIcon.INSTITUTION, "Accounts", Accounts.class);
-		menu.addNaviItem(VaadinIcon.CREDIT_CARD, "Payments", Payments.class);
-		menu.addNaviItem(VaadinIcon.CHART, "Statistics", Statistics.class);
-
-		NaviItem personnel = menu.addNaviItem(VaadinIcon.USERS, "Personnel",
-				null);
-		menu.addNaviItem(personnel, "Accountants", Accountants.class);
-		menu.addNaviItem(personnel, "Managers", Managers.class);*/
-	
 
 	/**
 	 * Configure the app's inner and outer headers and footers.
 	 */
 	private void initHeadersAndFooters() {
-		// setAppHeaderOuter();
-		// setAppFooterInner();
-		// setAppFooterOuter();
-
-		// Default inner header setup:
-		// - When using tabbed navigation the view title, user avatar and main menu button will appear in the TabBar.
-		// - When tabbed navigation is turned off they appear in the AppBar.
-
-		appBar = new AppBar("");
-
-		// Tabbed navigation
-		if (navigationTabs) {
-			tabBar = new TabBar();
-			UIUtils.setTheme(Lumo.DARK, tabBar);
-
-			// Shift-click to add a new tab
-			for (NaviItem item : naviDrawer.getMenu().getNaviItems()) {
-				item.addClickListener(e -> {
-					if (e.getButton() == 0 && e.isShiftKey()) {
-						tabBar.setSelectedTab(tabBar.addClosableTab(item.getText(), item.getNavigationTarget()));
-					}
-				});
-			}
-			appBar.getAvatar().setVisible(false);
-			setAppHeaderInner(tabBar, appBar);
-
-			// Default navigation
-		} else {
+			appBar = new AppBar("");
 			UIUtils.setTheme(Lumo.DARK, appBar);
 			setAppHeaderInner(appBar);
-		}
 	}
 
-	private void setAppHeaderOuter(Component... components) {
-		if (appHeaderOuter == null) {
-			appHeaderOuter = new Div();
-			appHeaderOuter.addClassName("app-header-outer");
-			getElement().insertChild(0, appHeaderOuter.getElement());
-		}
-		appHeaderOuter.removeAll();
-		appHeaderOuter.add(components);
-	}
+	
 
 	private void setAppHeaderInner(Component... components) {
 		if (appHeaderInner == null) {
@@ -241,27 +176,6 @@ public class MainLayout extends FlexBoxLayout
 		appHeaderInner.add(components);
 	}
 
-	private void setAppFooterInner(Component... components) {
-		if (appFooterInner == null) {
-			appFooterInner = new Div();
-			appFooterInner.addClassName("app-footer-inner");
-			column.getElement().insertChild(column.getElement().getChildCount(),
-					appFooterInner.getElement());
-		}
-		appFooterInner.removeAll();
-		appFooterInner.add(components);
-	}
-
-	private void setAppFooterOuter(Component... components) {
-		if (appFooterOuter == null) {
-			appFooterOuter = new Div();
-			appFooterOuter.addClassName("app-footer-outer");
-			getElement().insertChild(getElement().getChildCount(),
-					appFooterOuter.getElement());
-		}
-		appFooterOuter.removeAll();
-		appFooterOuter.add(components);
-	}
 
 	@Override
 	public void showRouterLayoutContent(HasElement content) {
@@ -284,31 +198,14 @@ public class MainLayout extends FlexBoxLayout
 
 	@Override
 	public void afterNavigation(AfterNavigationEvent event) {
-		if (navigationTabs) {
-			afterNavigationWithTabs(event);
-		} else {
-			afterNavigationWithoutTabs(event);
+		NaviItem active = getActiveItem(event);
+		if (active != null) {
+			getAppBar().setTitle(active.getText());
+			System.out.println("After navigation: " + active.getText());
 		}
 	}
 
-	private void afterNavigationWithTabs(AfterNavigationEvent e) {
-		NaviItem active = getActiveItem(e);
-		if (active == null) {
-			if (tabBar.getTabCount() == 0) {
-				tabBar.addClosableTab("", Home.class);
-			}
-		} else {
-			if (tabBar.getTabCount() > 0) {
-				tabBar.updateSelectedTab(active.getText(),
-						active.getNavigationTarget());
-			} else {
-				tabBar.addClosableTab(active.getText(),
-						active.getNavigationTarget());
-			}
-		}
-		appBar.getMenuIcon().setVisible(false);
-	}
-
+	
 	private NaviItem getActiveItem(AfterNavigationEvent e) {
 		for (NaviItem item : naviDrawer.getMenu().getNaviItems()) {
 			if (item.isHighlighted(e)) {
@@ -318,11 +215,7 @@ public class MainLayout extends FlexBoxLayout
 		return null;
 	}
 
-	private void afterNavigationWithoutTabs(AfterNavigationEvent e) {
-		NaviItem active = getActiveItem(e);
-		if (active != null) {
-			getAppBar().setTitle(active.getText());
-		}
-	}
+
+
 
 }
