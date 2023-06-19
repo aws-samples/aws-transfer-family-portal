@@ -22,7 +22,7 @@
     "typescript": "~3.9.7"
   },
   "dependencies": {
-    "aws-cdk-lib": "2.76.0",
+    "aws-cdk-lib": "2.80.0",
     "bcrypt": "^5.0.1",
     "constructs": "^10.0.0",
     "json5": "^2.2.3",
