@@ -80,17 +80,6 @@ public class LambdaFunctionHandler implements RequestHandler<Map<String, String>
 		System.out.println("Initializing... MindrotV1");
 		init();
 	}
-
-	/*Remove*/
-	public static void main(String[] args) {
-		Map<String, String> map = new HashMap<>();
-		map.put("username", "admin");
-		map.put("password", "abcABC123!");
-		map.put("protocol", "SFTP");
-		Context context = new TestContext2();
-		LambdaFunctionHandler lambdaFunctionHandler = new LambdaFunctionHandler();
-		lambdaFunctionHandler.handleRequest(map, context);
-	}
 	
 	@Override
 	public Map<String, Object> handleRequest(Map<String, String> event, Context context) {
@@ -106,8 +95,6 @@ public class LambdaFunctionHandler implements RequestHandler<Map<String, String>
 			obj.put("password", "*******");
 			eventGson = obj.toString();
 		}
-
-		logger.log("EVENT: " + eventGson);
 		
 		username = event.get("username");
 
@@ -218,8 +205,6 @@ public class LambdaFunctionHandler implements RequestHandler<Map<String, String>
 	}
 
 	private String getPolicy() {
-		//String policy = "{\"Version\": \"2012-10-17\",\"Statement\": [ { \"Effect\": \"Allow\",\"Action\": [ \"s3:*\", \"s3-object-lambda:*\" ],\"Resource\": \"*\" } ]}";
-		
 		String policy = "{";
 		policy += POLICY_HEADER;
 		policy += "[";
@@ -467,16 +452,8 @@ public class LambdaFunctionHandler implements RequestHandler<Map<String, String>
 	   */
 	  public static X509Certificate createCertificate(String certFile) throws  GeneralSecurityException, IOException {
 	    CertificateFactory certFactory = CertificateFactory.getInstance("X.509");
-	    /*
-	    try(InputStream certInputStream = new FileInputStream(new File("/"+certFile))) {
-	    	return (X509Certificate) certFactory.generateCertificate(certInputStream);	
-	    }*/
-	   // InputStream is =LambdaFunctionHandler.class.getClassLoader().getResourceAsStream(SSL_CERTIFICATE);
-		
 	    try (InputStream certInputStream = LambdaFunctionHandler.class.getResourceAsStream("/"+ certFile)) {
-	    	//printInputStream(is);
 	    	X509Certificate cert = (X509Certificate) certFactory.generateCertificate(certInputStream);
-	    	//System.exit(1);
 	    	return cert;
 	    }
 	  }
